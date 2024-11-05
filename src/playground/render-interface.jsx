@@ -1,3 +1,5 @@
+/* eslint-disable max-len */
+/* eslint-disable no-unused-vars */
 /**
  * Copyright (C) 2021 Thomas Weber
  *
@@ -82,6 +84,7 @@ if (AddonChannels.changeChannel) {
 
 runAddons();
 
+// 已禁用
 const Footer = () => (
     <footer className={styles.footer}>
         <div className={styles.footerContent}>
@@ -262,7 +265,7 @@ class Interface extends React.Component {
                         backpackHost="_local_"
                         {...props}
                     />
-                    {isHomepage ? (
+                    {/* {isHomepage ? (
                         <React.Fragment>
                             {isBrowserSupported() ? null : (
                                 <BrowserModal isRtl={isRtl} />
@@ -349,9 +352,11 @@ class Interface extends React.Component {
                                 <FeaturedProjects studio="27205657" />
                             </div>
                         </React.Fragment>
-                    ) : null}
+                    ) : null} */}
                 </div>
-                {isHomepage && <Footer />}
+
+                {/* 已禁用 */}
+                {/* {isHomepage && <Footer />} */}
             </div>
         );
     }

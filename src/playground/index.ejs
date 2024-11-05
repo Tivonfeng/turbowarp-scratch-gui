@@ -76,14 +76,14 @@
     </style>
   </head>
   <body>
-    <noscript>
+    <!-- <noscript>
       <div class="splash-screen">
         <div>
           <h1><%= htmlWebpackPlugin.options.APP_NAME %> requires JavaScript</h1>
           <p>Consider using <a href="https://desktop.turbowarp.org/">TurboWarp Desktop</a> if you are afraid of remote JavaScript.</p>
         </div>
       </div>
-    </noscript>
+    </noscript> -->
 
     <div class="splash-screen spash-waiting-for-js" hidden>
       <div class="splash-spinner"></div>
@@ -153,7 +153,7 @@
           el.textContent = 'Error (splash) in ' + source + ' (' + line + ':' + col + '): ' + err;
           splashError.appendChild(el);
         };
-
+        console.log('location----->', location);
         splashReset.onclick = function () {
           splashReset.disabled = true;
           function hardRefresh() {
@@ -180,6 +180,10 @@
           window.onerror = null;
         };
       })();
+      window.scratchConfig = {
+        canShare: true,
+        assertCDN: '/static'
+      };
     </script>
 
     <div id="app"></div>

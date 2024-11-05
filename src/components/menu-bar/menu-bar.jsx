@@ -1,3 +1,6 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
+/* eslint-disable react/no-unused-prop-types */
 import classNames from 'classnames';
 import {connect} from 'react-redux';
 import {compose} from 'redux';
@@ -13,6 +16,7 @@ import Box from '../box/box.jsx';
 import Button from '../button/button.jsx';
 import CommunityButton from './community-button.jsx';
 import ShareButton from './share-button.jsx';
+import AccountNav from './account-nav.jsx';
 import {ComingSoonTooltip} from '../coming-soon/coming-soon.jsx';
 import Divider from '../divider/divider.jsx';
 import SaveStatus from './save-status.jsx';
@@ -941,7 +945,7 @@ class MenuBar extends React.Component {
                             username={this.props.authorUsername}
                         />
                     ) : null)}
-                    {this.props.canShare ? (
+                    {this.props.canShare || window.scratchConfig.canShare ? (
                         (this.props.isShowingProject || this.props.isUpdating) && (
                             <div className={classNames(styles.menuBarItem)}>
                                 <ProjectWatcher onDoneUpdating={this.props.onSeeCommunity}>
@@ -1003,14 +1007,13 @@ class MenuBar extends React.Component {
                         ) : []))}
                     </div>
                     {/* tw: add a feedback button */}
-                    <div className={styles.menuBarItem}>
+                    {/* <div className={styles.menuBarItem}>
                         <a
                             className={styles.feedbackLink}
                             href="https://scratch.mit.edu/users/GarboMuffin/#comments"
                             rel="noopener noreferrer"
                             target="_blank"
                         >
-                            {/* todo: icon */}
                             <Button className={styles.feedbackButton}>
                                 <FormattedMessage
                                     defaultMessage="{APP_NAME} Feedback"
@@ -1022,7 +1025,7 @@ class MenuBar extends React.Component {
                                 />
                             </Button>
                         </a>
-                    </div>
+                    </div> */}
                 </div>
 
                 <div className={styles.accountInfoGroup}>
@@ -1032,6 +1035,10 @@ class MenuBar extends React.Component {
                 </div>
 
                 {aboutButton}
+                <AccountNav
+                    isOpen={this.props.accountMenuOpen}
+                    onClose={this.props.onRequestCloseAccount}
+                />
             </Box>
         );
     }
