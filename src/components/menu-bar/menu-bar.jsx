@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 /* eslint-disable react/no-unused-prop-types */
@@ -544,7 +545,7 @@ class MenuBar extends React.Component {
                         </div>}
                         
                         {/* logo */}
-                        {(window.scratchConfig.logo && window.scratchConfig.logo.show) && (
+                        {(window.scratchConfig.menubar.logo.show) && (
                             <div className={classNames(styles.menuBarItem)}>
                                 <img
                                     alt="Scratch"
@@ -552,8 +553,8 @@ class MenuBar extends React.Component {
                                         [styles.clickable]: typeof this.props.onClickLogo !== 'undefined'
                                     })}
                                     draggable={false}
-                                    src={window.scratchConfig.logo.url || this.props.logo}
-                                    onClick={window.scratchConfig.logo.handleClickLogo}
+                                    src={window.scratchConfig.menubar.logo.url || this.props.logo}
+                                    onClick={window.scratchConfig.menubar.logo.handleClickLogo}
                                 />
                             </div>
                         )}
@@ -974,7 +975,7 @@ class MenuBar extends React.Component {
                     ) : null)}
 
                     {/* 分享按钮 */}
-                    {this.props.canShare ? (
+                    {window.scratchConfig.menubar.shareButton.show ? (
                         (this.props.isShowingProject || this.props.isUpdating) && (
                             <div className={classNames(styles.menuBarItem)}>
                                 <ProjectWatcher onDoneUpdating={this.props.onSeeCommunity}>
@@ -985,7 +986,8 @@ class MenuBar extends React.Component {
                                                 isShared={this.props.isShared}
                                                 /* eslint-disable react/jsx-no-bind */
                                                 onClick={() => {
-                                                    this.handleClickShare(waitForUpdate);
+                                                    window.scratchConfig.shareButton.handleClickShare();
+                                                    // this.handleClickShare(waitForUpdate);
                                                 }}
                                                 /* eslint-enable react/jsx-no-bind */
                                             />
@@ -1060,13 +1062,57 @@ class MenuBar extends React.Component {
                         </a>
                     </div> */}
                 </div>
-
-                <div className={styles.accountInfoGroup}>
-                    <TWSaveStatus
-                        showSaveFilePicker={this.props.showSaveFilePicker}
-                    />
-                </div>
-
+                {
+                    <div className={styles.accountInfoGroup}>
+                        <TWSaveStatus
+                            showSaveFilePicker={this.props.showSaveFilePicker}
+                        />
+                        {
+                            // ************ user is logged in ************
+                            <React.Fragment>
+                                {(window.scratchConfig.menubar.myStuff.show) && (
+                                    // eslint-disable-next-line react/jsx-no-target-blank
+                                    <a
+                                        href={window.scratchConfig.menubar.myStuff.url}
+                                        target="_blank"
+                                    >
+                                        <div
+                                            className={classNames(
+                                                styles.menuBarItem,
+                                                styles.hoverable,
+                                                styles.mystuffButton
+                                            )}
+                                        >
+                                            <img
+                                                className={styles.mystuffIcon}
+                                                src={mystuffIcon}
+                                            />
+                                        </div>
+                                    </a>
+                                )
+                                }{
+                                    (window.scratchConfig.menubar.userAvatar.show) && (
+                                        <AccountNav
+                                            className={classNames(
+                                                styles.menuBarItem,
+                                                styles.hoverable,
+                                                {[styles.active]: this.props.accountMenuOpen}
+                                            )}
+                                            thumbnailUrl={this.props.avatar}
+                                            username={this.props.lq_username}
+                                            isOpen={this.props.accountMenuOpen}
+                                            isRtl={this.props.isRtl}
+                                            menuBarMenuClassName={classNames(styles.menuBarMenu)}
+                                            onClick={this.props.onAvatarClick}
+                                            onClose={this.props.onRequestCloseAccount}
+                                            onLogOut={this.props.onLogOut}
+                                        />
+                                    )
+                                }
+                            </React.Fragment>
+                        }
+                    </div>
+                }
                 {/* {aboutButton} */}
             </Box>
         );
@@ -1212,7 +1258,10 @@ const mapStateToProps = (state, ownProps) => {
         mode1920: isTimeTravel1920(state),
         mode1990: isTimeTravel1990(state),
         mode2020: isTimeTravel2020(state),
-        modeNow: isTimeTravelNow(state)
+        modeNow: isTimeTravelNow(state),
+        lq_username: window.scratchConfig.menubar.userAvatar.username || '',
+        avatar: window.scratchConfig.menubar.userAvatar.avatar || null,
+        onAvatarClick: window.scratchConfig.menubar.userAvatar.handleClick
     };
 };
 

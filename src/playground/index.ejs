@@ -183,13 +183,43 @@
       
       
       window.scratchConfig = {
-        logo: {
-          show: true,
-          url: "https://scratch.mit.edu/images/logo_sm.png",
-          handleClickLogo: () => {
-            console.log('点击LOGO')
-            //TODO 跳转
-          }
+        menubar: {
+          logo: {
+            show: true,
+            url: "https://scratch.mit.edu/images/logo_sm.png",
+            handleClickLogo: () => {
+              console.log('点击LOGO')
+              //TODO 跳转
+            }
+          },
+          shareButton: {
+            show: true,
+            handleClickShare: () => {
+              console.log('分享按钮')
+              /*window.scratch.getProjectCover(cover => {
+                //TODO 获取到作品截图
+                console.log(cover)
+              })
+              window.scratch.getProjectFile(file => {
+                //TODO 获取到项目文件
+                console.log(file)
+              }) */
+            }
+          },
+          //我的物品按钮
+          myStuff: {
+            show: true, //是否显示
+            url: '/myProject' //跳转的连接
+          },
+          //用户头像按钮
+          userAvatar: {
+            show: true, //是否显示
+            username: '未登录', //用户名
+            avatar:  window.location.protocol+"//"+window.location.host + '/avatar.png', //用户头像
+            handleClick(){
+              //点击头像，可以弹出登录框等操作
+            }
+          },
         },
         open: true,
         assertCDN: '/static'

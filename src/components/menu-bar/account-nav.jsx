@@ -13,7 +13,7 @@ import MenuBarMenu from './menu-bar-menu.jsx';
 import {MenuSection} from '../menu/menu.jsx';
 import MenuItemContainer from '../../containers/menu-item.jsx';
 import UserAvatar from './user-avatar.jsx';
-import dropdownCaret from './dropdown-caret.svg';
+// import dropdownCaret from './dropdown-caret.svg';
 
 import styles from './account-nav.css';
 
@@ -49,13 +49,13 @@ const AccountNavComponent = ({
             <span className={styles.profileName}>
                 {username}
             </span>
-            <div className={styles.dropdownCaretPosition}>
+            {/* <div className={styles.dropdownCaretPosition}>
                 <img
                     className={styles.dropdownCaretIcon}
                     src={dropdownCaret}
                     draggable={false}
                 />
-            </div>
+            </div> */}
         </div>
         <MenuBarMenu
             className={menuBarMenuClassName}
