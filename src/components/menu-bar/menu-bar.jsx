@@ -480,7 +480,7 @@ class MenuBar extends React.Component {
             </Button>
         );
         // Show the About button only if we have a handler for it (like in the desktop app)
-        const aboutButton = this.buildAboutMenu(this.props.onClickAbout);
+        // const aboutButton = this.buildAboutMenu(this.props.onClickAbout);
         return (
             <Box
                 className={classNames(
@@ -542,20 +542,22 @@ class MenuBar extends React.Component {
                                 </MenuBarMenu>
                             </MenuLabel>
                         </div>}
-                        {(this.props.canChangeTheme || this.props.canChangeLanguage) && (<SettingsMenu
-                            canChangeLanguage={this.props.canChangeLanguage}
-                            canChangeTheme={this.props.canChangeTheme}
-                            isRtl={this.props.isRtl}
-                            onClickDesktopSettings={
-                                this.props.onClickDesktopSettings &&
-                                this.handleClickDesktopSettings
-                            }
-                            // eslint-disable-next-line react/jsx-no-bind
-                            onOpenCustomSettings={this.props.onClickAddonSettings.bind(null, 'editor-theme3')}
-                            onRequestClose={this.props.onRequestCloseSettings}
-                            onRequestOpen={this.props.onClickSettings}
-                            settingsMenuOpen={this.props.settingsMenuOpen}
-                        />)}
+                        
+                        {/* logo */}
+                        {(window.scratchConfig.logo && window.scratchConfig.logo.show) && (
+                            <div className={classNames(styles.menuBarItem)}>
+                                <img
+                                    alt="Scratch"
+                                    className={classNames(styles.scratchLogo, {
+                                        [styles.clickable]: typeof this.props.onClickLogo !== 'undefined'
+                                    })}
+                                    draggable={false}
+                                    src={window.scratchConfig.logo.url || this.props.logo}
+                                    onClick={window.scratchConfig.logo.handleClickLogo}
+                                />
+                            </div>
+                        )}
+                        {/* files button */}
                         {(this.props.canManageFiles) && (
                             <MenuLabel
                                 open={this.props.fileMenuOpen}
@@ -712,6 +714,8 @@ class MenuBar extends React.Component {
                                 </MenuBarMenu>
                             </MenuLabel>
                         )}
+
+                        {/* edit button */}
                         <MenuLabel
                             open={this.props.editMenuOpen}
                             onOpen={this.props.onClickEdit}
@@ -836,6 +840,8 @@ class MenuBar extends React.Component {
                                 </MenuSection>
                             </MenuBarMenu>
                         </MenuLabel>
+
+
                         {this.props.isTotallyNormal && (
                             <MenuLabel
                                 open={this.props.modeMenuOpen}
@@ -880,6 +886,7 @@ class MenuBar extends React.Component {
                             </MenuLabel>
                         )}
 
+                        {/* 插件 */}
                         {this.props.onClickAddonSettings && (
                             <div
                                 className={classNames(styles.menuBarItem, styles.hoverable)}
@@ -900,6 +907,8 @@ class MenuBar extends React.Component {
                                 </span>
                             </div>
                         )}
+
+                        {/* 高级 */}
                         {this.props.onClickSettingsModal && (
                             <div
                                 className={classNames(styles.menuBarItem, styles.hoverable)}
@@ -920,10 +929,28 @@ class MenuBar extends React.Component {
                                 </span>
                             </div>
                         )}
+
+                        {/* settings button */}
+                        {(this.props.canChangeTheme || this.props.canChangeLanguage) && (<SettingsMenu
+                            canChangeLanguage={this.props.canChangeLanguage}
+                            canChangeTheme={this.props.canChangeTheme}
+                            isRtl={this.props.isRtl}
+                            onClickDesktopSettings={
+                                this.props.onClickDesktopSettings &&
+                                this.handleClickDesktopSettings
+                            }
+                            // eslint-disable-next-line react/jsx-no-bind
+                            onOpenCustomSettings={this.props.onClickAddonSettings.bind(null, 'editor-theme3')}
+                            onRequestClose={this.props.onRequestCloseSettings}
+                            onRequestOpen={this.props.onClickSettings}
+                            settingsMenuOpen={this.props.settingsMenuOpen}
+                        />)}
                     </div>
 
+                    {/* 分割线 */}
                     <Divider className={styles.divider} />
-
+                    
+                    {/* 作品名 */}
                     {this.props.canEditTitle ? (
                         <div className={classNames(styles.menuBarItem, styles.growable)}>
                             <MenuBarItemTooltip
@@ -945,7 +972,9 @@ class MenuBar extends React.Component {
                             username={this.props.authorUsername}
                         />
                     ) : null)}
-                    {this.props.canShare || window.scratchConfig.canShare ? (
+
+                    {/* 分享按钮 */}
+                    {this.props.canShare ? (
                         (this.props.isShowingProject || this.props.isUpdating) && (
                             <div className={classNames(styles.menuBarItem)}>
                                 <ProjectWatcher onDoneUpdating={this.props.onSeeCommunity}>
@@ -972,11 +1001,15 @@ class MenuBar extends React.Component {
                             </MenuBarItemTooltip>
                         </div>
                     ) : null}
+
+                    {/* 改编按钮 */}
                     {this.props.canRemix && (
                         <div className={classNames(styles.menuBarItem)}>
                             {remixButton}
                         </div>
                     )}
+
+                    {/* 查看作品或者源代码按钮 */}
                     <div className={classNames(styles.menuBarItem, styles.communityButtonWrapper)}>
                         {this.props.enableCommunity ? (
                             (this.props.isShowingProject || this.props.isUpdating) && (
@@ -1034,11 +1067,7 @@ class MenuBar extends React.Component {
                     />
                 </div>
 
-                {aboutButton}
-                <AccountNav
-                    isOpen={this.props.accountMenuOpen}
-                    onClose={this.props.onRequestCloseAccount}
-                />
+                {/* {aboutButton} */}
             </Box>
         );
     }

@@ -180,8 +180,18 @@
           window.onerror = null;
         };
       })();
+      
+      
       window.scratchConfig = {
-        canShare: true,
+        logo: {
+          show: true,
+          url: "https://scratch.mit.edu/images/logo_sm.png",
+          handleClickLogo: () => {
+            console.log('点击LOGO')
+            //TODO 跳转
+          }
+        },
+        open: true,
         assertCDN: '/static'
       };
     </script>
