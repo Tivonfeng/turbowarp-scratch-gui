@@ -627,6 +627,8 @@ class MenuBar extends React.Component {
                                             )}
                                         </MenuSection>
                                     )}
+
+
                                     <MenuSection>
                                         <MenuItem
                                             onClick={this.props.onStartSelectingFileUpload}
@@ -689,6 +691,8 @@ class MenuBar extends React.Component {
                                             )}
                                         </SB3Downloader>
                                     </MenuSection>
+
+
                                     {this.props.onClickPackager && (
                                         <MenuSection>
                                             <MenuItem
@@ -1064,9 +1068,9 @@ class MenuBar extends React.Component {
                 </div>
                 {
                     <div className={styles.accountInfoGroup}>
-                        <TWSaveStatus
+                        {/* <TWSaveStatus
                             showSaveFilePicker={this.props.showSaveFilePicker}
-                        />
+                        /> */}
                         {
                             // ************ user is logged in ************
                             <React.Fragment>
