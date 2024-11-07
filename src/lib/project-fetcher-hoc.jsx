@@ -89,7 +89,21 @@ const ProjectFetcherHOC = function (WrappedComponent) {
                 storage.setAssetHost(this.props.assetHost);
             }
             if (this.props.isFetchingWithId && !prevProps.isFetchingWithId) {
-                this.fetchProject(this.props.reduxProjectId, this.props.loadingState);
+
+                // 导入默认project.sb3
+                if ('defaultProjectURL' in window.scratchConfig){
+                    const that = this;
+                    fetch(window.scratchConfig.defaultProjectURL).then(r => r.blob())
+                        .then(blob => {
+                            const reader = new FileReader();
+                            reader.onload = () => {
+                                that.props.onFetchedProjectData(reader.result, that.props.loadingState);
+                            };
+                            reader.readAsArrayBuffer(blob);
+                        });
+                } else {
+                    this.fetchProject(this.props.reduxProjectId, this.props.loadingState);
+                }
             }
             if (this.props.isShowingProject && !prevProps.isShowingProject) {
                 this.props.onProjectUnchanged();
