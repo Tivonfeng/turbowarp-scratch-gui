@@ -110,6 +110,7 @@ import sharedMessages from '../../lib/shared-messages';
 
 import SeeInsideButton from './tw-see-inside.jsx';
 import {notScratchDesktop} from '../../lib/isScratchDesktop.js';
+import ProfileButton from './profile-button.jsx';
 import {APP_NAME} from '../../lib/brand.js';
 
 const ariaMessages = defineMessages({
@@ -1015,6 +1016,23 @@ class MenuBar extends React.Component {
                         </div>
                     )}
 
+                    {/* 自定义按钮，无线增加 */}
+                    {
+                        (window.scratchConfig.menubar.customButtons && window.scratchConfig.menubar.customButtons.length > 0) && (
+                            window.scratchConfig.menubar.customButtons.map(item => {
+                                if (item.show) {
+                                    return (<ProfileButton
+                                        key={item.buttonName}
+                                        className={styles.menuBarButton}
+                                        style={item.style || {}}
+                                        onClick={item.handleClick}
+                                        buttonName={item.buttonName}
+                                    />);
+                                }
+                                return null;
+                            })
+                        )
+                    }
                     {/* 查看作品或者源代码按钮 */}
                     <div className={classNames(styles.menuBarItem, styles.communityButtonWrapper)}>
                         {this.props.enableCommunity ? (

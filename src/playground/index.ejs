@@ -192,7 +192,7 @@
             }
           },
           shareButton: {
-            show: true,
+            show: false,
             handleClickShare: () => {
               console.log('分享按钮')
               /*window.scratch.getProjectCover(cover => {
@@ -220,6 +220,31 @@
               console.log('点击头像')
             }
           },
+          customButtons: [
+          {
+            show: true, //是否显示
+            buttonName: '分享', //按钮名
+            style:{ //按钮样式
+              color: 'white',
+              background: 'hsla(30, 100%, 55%, 1)',
+            },
+            handleClick:()=>{ //按钮事件
+              console.log("自定义按钮1");
+              console.log('分享按钮')
+              /*window.scratch.getProjectCover(cover => {
+                //TODO 获取到作品截图
+              })
+              window.scratch.getProjectFile(file => {
+                //TODO 获取到项目文件
+              })
+                */
+              // 获取到项目名
+              var projectName = window.scratch.getProjectName()
+              console.log(projectName);
+            }
+            },
+            //可继续新增按钮
+          ]
         },
         open: true,
         assertCDN: '/static',
