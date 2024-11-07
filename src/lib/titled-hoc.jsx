@@ -25,6 +25,20 @@ const TitledHOC = function (WrappedComponent) {
     class TitledComponent extends React.Component {
         componentDidMount () {
             this.handleReceivedProjectTitle(this.props.projectTitle);
+            // 监听项目名称改变事件
+            const that = this;
+            document.addEventListener('setProjectName', e => {
+                that.props.onChangedProjectTitle(e.detail.projectName);
+            });
+
+            // 获取项目名称
+            window.scratchConfig.getProjectName = () => this.props.reduxProjectTitle;
+
+            // 设置项目名称
+            window.scratchConfig.setProjectName = projeceName => {
+                const event = new CustomEvent('setProjectName', {detail: {projectName: projeceName}});
+                document.dispatchEvent(event);
+            };
         }
         componentDidUpdate (prevProps) {
             if (this.props.projectTitle !== prevProps.projectTitle) {

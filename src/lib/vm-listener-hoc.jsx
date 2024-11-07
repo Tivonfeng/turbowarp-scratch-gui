@@ -110,6 +110,8 @@ const vmListenerHOC = function (WrappedComponent) {
             this.props.vm.off('PROJECT_RUN_STOP', this.props.onProjectRunStop);
             this.props.vm.off('PROJECT_CHANGED', this.handleProjectChanged);
             this.props.vm.off('RUNTIME_STARTED', this.props.onRuntimeStarted);
+            // 监听运行开始事件
+            this.props.vm.on('RUNTIME_STARTED', this.handleRuntimeStarted);
             this.props.vm.off('RUNTIME_STOPPED', this.props.onRuntimeStopped);
             this.props.vm.off('PROJECT_START', this.props.onGreenFlag);
             this.props.vm.off('PERIPHERAL_CONNECTION_LOST_ERROR', this.props.onShowExtensionAlert);
@@ -131,6 +133,12 @@ const vmListenerHOC = function (WrappedComponent) {
                 this.props.onHasCloudVariablesChanged(hasCloudVariables);
             }
         }
+        // 监听运行开始事件
+        handleRuntimeStarted (){
+            window.props = this.props;
+            window.vm = this.props.vm;
+        }
+
         // tw: handling for compile errors
         handleCompileError (target, error) {
             const errorMessage = `${error}`;
