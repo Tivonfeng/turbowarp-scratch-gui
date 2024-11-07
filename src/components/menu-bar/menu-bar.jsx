@@ -834,7 +834,7 @@ class MenuBar extends React.Component {
                                         </MenuItem>
                                     )}</CloudVariablesToggler>
                                 </MenuSection>
-                                <MenuSection>
+                                {/* <MenuSection>
                                     <MenuItem onClick={this.props.onClickSettingsModal}>
                                         <FormattedMessage
                                             defaultMessage="Advanced Settings"
@@ -842,7 +842,7 @@ class MenuBar extends React.Component {
                                             id="tw.menuBar.moreSettings"
                                         />
                                     </MenuItem>
-                                </MenuSection>
+                                </MenuSection> */}
                             </MenuBarMenu>
                         </MenuLabel>
 
