@@ -24,6 +24,7 @@ const messages = defineMessages({
 const TitledHOC = function (WrappedComponent) {
     class TitledComponent extends React.Component {
         componentDidMount () {
+            window.scratch = window.scratch || {};
             this.handleReceivedProjectTitle(this.props.projectTitle);
             // 监听项目名称改变事件
             const that = this;
@@ -32,10 +33,10 @@ const TitledHOC = function (WrappedComponent) {
             });
 
             // 获取项目名称
-            window.scratchConfig.getProjectName = () => this.props.reduxProjectTitle;
+            window.scratch.getProjectName = () => this.props.reduxProjectTitle;
 
             // 设置项目名称
-            window.scratchConfig.setProjectName = projeceName => {
+            window.scratch.setProjectName = projeceName => {
                 const event = new CustomEvent('setProjectName', {detail: {projectName: projeceName}});
                 document.dispatchEvent(event);
             };
