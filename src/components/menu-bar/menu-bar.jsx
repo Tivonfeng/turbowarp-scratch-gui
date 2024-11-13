@@ -547,7 +547,7 @@ class MenuBar extends React.Component {
                         </div>}
                         
                         {/* logo */}
-                        {(window.scratchConfig.menubar.logo.show) && (
+                        {(window.scratchConfig && window.scratchConfig.menubar && window.scratchConfig.menubar.logo && window.scratchConfig.menubar.logo.show) && (
                             <div className={classNames(styles.menuBarItem)}>
                                 <img
                                     alt="Scratch"
@@ -981,7 +981,7 @@ class MenuBar extends React.Component {
                     ) : null)}
 
                     {/* 分享按钮 */}
-                    {window.scratchConfig.menubar.shareButton.show ? (
+                    { window.scratchConfig && window.scratchConfig.menubar && window.scratchConfig.menubar.shareButton && window.scratchConfig.menubar.shareButton.show ? (
                         (this.props.isShowingProject || this.props.isUpdating) && (
                             <div className={classNames(styles.menuBarItem)}>
                                 <ProjectWatcher onDoneUpdating={this.props.onSeeCommunity}>
@@ -1019,7 +1019,7 @@ class MenuBar extends React.Component {
 
                     {/* 自定义按钮，无线增加 */}
                     {
-                        (window.scratchConfig.menubar.customButtons && window.scratchConfig.menubar.customButtons.length > 0) && (
+                        (window.scratchConfig && window.scratchConfig.menubar && window.scratchConfig.menubar.customButtons && window.scratchConfig.menubar.customButtons.length > 0) && (
                             window.scratchConfig.menubar.customButtons.map(item => {
                                 if (item.show) {
                                     return (<ProfileButton
@@ -1066,7 +1066,7 @@ class MenuBar extends React.Component {
                     </div>
 
                     {/* 时间计时器 */}
-                    { window.scratchConfig.menubar.timecount && <TimeCount />}
+                    { window.scratchConfig && window.scratchConfig.menubar && window.scratchConfig.menubar.timecount && <TimeCount />}
                     {/* tw: add a feedback button */}
                     {/* <div className={styles.menuBarItem}>
                         <a
@@ -1096,7 +1096,7 @@ class MenuBar extends React.Component {
                         {
                             // ************ user is logged in ************
                             <React.Fragment>
-                                {(window.scratchConfig.menubar.myStuff.show) && (
+                                {(window.scratchConfig && window.scratchConfig.menubar && window.scratchConfig.menubar.myStuff && window.scratchConfig.menubar.myStuff.show) && (
                                     // eslint-disable-next-line react/jsx-no-target-blank
                                     <a
                                         href={window.scratchConfig.menubar.myStuff.url}
@@ -1117,7 +1117,7 @@ class MenuBar extends React.Component {
                                     </a>
                                 )
                                 }{
-                                    (window.scratchConfig.menubar.userAvatar.show) && (
+                                    (window.scratchConfig && window.scratchConfig.menubar && window.scratchConfig.menubar.userAvatar && window.scratchConfig.menubar.userAvatar.show) && (
                                         <AccountNav
                                             className={classNames(
                                                 styles.menuBarItem,
@@ -1285,9 +1285,9 @@ const mapStateToProps = (state, ownProps) => {
         mode1990: isTimeTravel1990(state),
         mode2020: isTimeTravel2020(state),
         modeNow: isTimeTravelNow(state),
-        lq_username: window.scratchConfig.menubar.userAvatar.username || '',
-        avatar: window.scratchConfig.menubar.userAvatar.avatar || null,
-        onAvatarClick: window.scratchConfig.menubar.userAvatar.handleClick
+        lq_username: window.scratchConfig?.menubar?.userAvatar?.username || '',
+        avatar: window.scratchConfig?.menubar?.userAvatar?.avatar || null,
+        onAvatarClick: window.scratchConfig?.menubar?.userAvatar?.handleClick
     };
 };
 

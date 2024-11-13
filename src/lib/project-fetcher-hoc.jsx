@@ -91,7 +91,7 @@ const ProjectFetcherHOC = function (WrappedComponent) {
             if (this.props.isFetchingWithId && !prevProps.isFetchingWithId) {
 
                 // 导入默认project.sb3
-                if ('defaultProjectURL' in window.scratchConfig){
+                if (window.scratchConfig && 'defaultProjectURL' in window.scratchConfig){
                     const that = this;
                     fetch(window.scratchConfig.defaultProjectURL).then(r => r.blob())
                         .then(blob => {
