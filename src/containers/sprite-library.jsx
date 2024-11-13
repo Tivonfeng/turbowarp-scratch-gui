@@ -31,22 +31,22 @@ class SpriteLibrary extends React.PureComponent {
     componentDidMount () {
         if (this.state.data.then) {
 
-			document.addEventListener("pushSpriteLibrary", (e) => {
-				let data = e.detail.data.concat(this.state.data.then ? [] : this.state.data)
-				this.setState({
-					data
-				})
-			})
-			window.scratch.pushSpriteLibrary = (data)=>{
-				var event = new CustomEvent('pushSpriteLibrary', {"detail": {data}});
-				document.dispatchEvent(event);
-			};
+            document.addEventListener('pushSpriteLibrary', e => {
+                const data = e.detail.data.concat(this.state.data.then ? [] : this.state.data);
+                this.setState({
+                    data
+                });
+            });
+            window.scratch.pushSpriteLibrary = data => {
+                const event = new CustomEvent('pushSpriteLibrary', {detail: {data}});
+                document.dispatchEvent(event);
+            };
             this.state.data.then(data => {
-				this.setState({
-					data
-				});
-				window.scratchConfig.asserts.handleBeforeSpriteLibraryOpen();
-			});
+                this.setState({
+                    data
+                });
+                window.scratchConfig.asserts.handleBeforeSpriteLibraryOpen();
+            });
         }
     }
     handleItemSelect (item) {
