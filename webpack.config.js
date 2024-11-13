@@ -19,14 +19,14 @@ if (root.length > 0 && !root.endsWith('/')) {
     throw new Error('If ROOT is defined, it must have a trailing slash.');
 }
 
-// const htmlWebpackPluginCommon = {
-//     root: root,
-//     meta: JSON.parse(process.env.EXTRA_META || '{}'),
-//     APP_NAME
-// };
+const htmlWebpackPluginCommon = {
+    root: root,
+    meta: JSON.parse(process.env.EXTRA_META || '{}'),
+    APP_NAME
+};
 
 // When this changes, the path for all JS files will change, bypassing any HTTP caches
-const CACHE_EPOCH = 'pentapod';
+const CACHE_EPOCH = 'bbb';
 
 const base = {
     mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
@@ -42,7 +42,7 @@ const base = {
             rewrites: [
                 {from: /^\/\d+\/?$/, to: '/index.html'},
                 {from: /^\/\d+\/fullscreen\/?$/, to: '/fullscreen.html'},
-                {from: /^\/\d+\/editor\/?$/, to: '/editor.html'},
+                {from: /^\/\d+\/player\/?$/, to: '/player.html'},
                 {from: /^\/\d+\/embed\/?$/, to: '/embed.html'},
                 {from: /^\/addons\/?$/, to: '/addons.html'}
             ]
@@ -190,45 +190,45 @@ module.exports = [
             new HtmlWebpackPlugin({
                 chunks: ['editor'],
                 template: 'src/playground/index.ejs',
-                filename: 'editor.html',
+                filename: 'index.html',
                 title: `${APP_NAME} - Run Scratch projects faster`,
-                isEditor: true
-                // ...htmlWebpackPluginCommon
+                isEditor: true,
+                ...htmlWebpackPluginCommon
             }),
             new HtmlWebpackPlugin({
                 chunks: ['player'],
                 template: 'src/playground/index.ejs',
-                filename: 'index.html',
-                title: `${APP_NAME} - Run Scratch projects faster`
-                // ...htmlWebpackPluginCommon
+                filename: 'player.html',
+                title: `${APP_NAME} - Run Scratch projects faster`,
+                ...htmlWebpackPluginCommon
             }),
             new HtmlWebpackPlugin({
                 chunks: ['fullscreen'],
                 template: 'src/playground/index.ejs',
                 filename: 'fullscreen.html',
-                title: `${APP_NAME} - Run Scratch projects faster`
-                // ...htmlWebpackPluginCommon
+                title: `${APP_NAME} - Run Scratch projects faster`,
+                ...htmlWebpackPluginCommon
             }),
             new HtmlWebpackPlugin({
                 chunks: ['embed'],
                 template: 'src/playground/embed.ejs',
                 filename: 'embed.html',
-                title: `Embedded Project - ${APP_NAME}`
-                // ...htmlWebpackPluginCommon
+                title: `Embedded Project - ${APP_NAME}`,
+                ...htmlWebpackPluginCommon
             }),
             new HtmlWebpackPlugin({
                 chunks: ['addon-settings'],
                 template: 'src/playground/simple.ejs',
                 filename: 'addons.html',
-                title: `Addon Settings - ${APP_NAME}`
-                // ...htmlWebpackPluginCommon
+                title: `Addon Settings - ${APP_NAME}`,
+                ...htmlWebpackPluginCommon
             }),
             new HtmlWebpackPlugin({
                 chunks: ['credits'],
                 template: 'src/playground/simple.ejs',
                 filename: 'credits.html',
-                title: `${APP_NAME} Credits`
-                // ...htmlWebpackPluginCommon
+                title: `${APP_NAME} Credits`,
+                ...htmlWebpackPluginCommon
             }),
             new CopyWebpackPlugin({
                 patterns: [
