@@ -35,6 +35,8 @@ const TimeCount = ({
             `${minutes.toString().padStart(2, '0')}:` +
             `${remainingSeconds.toString().padStart(2, '0')}`;
     };
+    window.scratch = window.scratch || {};
+    window.scratch.getTimeCount = () => time;
 
     return (
         <div
