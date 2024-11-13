@@ -1,0 +1,8 @@
+.timeCount {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #f7f8fb;
+    user-select: none;
+    display: inline-block;
+} 
