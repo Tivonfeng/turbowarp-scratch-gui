@@ -36,7 +36,7 @@ const STAGE_DISPLAY_SIZES = keyMirror({
 });
 
 // zoom level to start with
-const BLOCKS_DEFAULT_SCALE = 0.675;
+const BLOCKS_DEFAULT_SCALE = 0.8; // 0.675
 
 const FIXED_WIDTH = 480;
 
