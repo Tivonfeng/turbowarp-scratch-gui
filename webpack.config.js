@@ -19,11 +19,11 @@ if (root.length > 0 && !root.endsWith('/')) {
     throw new Error('If ROOT is defined, it must have a trailing slash.');
 }
 
-const htmlWebpackPluginCommon = {
-    root: root,
-    meta: JSON.parse(process.env.EXTRA_META || '{}'),
-    APP_NAME
-};
+// const htmlWebpackPluginCommon = {
+//     root: root,
+//     meta: JSON.parse(process.env.EXTRA_META || '{}'),
+//     APP_NAME
+// };
 
 // When this changes, the path for all JS files will change, bypassing any HTTP caches
 const CACHE_EPOCH = 'pentapod';
@@ -233,8 +233,8 @@ module.exports = [
             new CopyWebpackPlugin({
                 patterns: [
                     {
-                        from: 'static',
-                        to: ''
+                        from: 'static/personal_static',
+                        to: 'static'
                     }
                 ]
             }),
