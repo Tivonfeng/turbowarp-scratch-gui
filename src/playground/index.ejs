@@ -101,24 +101,27 @@
 	<script src="../js/qiniu.min.js"></script>
 	<script src="../js/common.js?v=27"></script> -->
 	<script>
-		// let canShare = true;
-		// let uploadParam = {};
-		// let workId = urlParams('workId');
-		// let unitId = urlParams('unitId');
-		// let workFileUrl = urlParams('workFile'); //SB3路径
-		// let workName = urlParams('workName'); //作业名
-		// if (workName) workName = decodeURIComponent(workName);
-		// let departId = urlParams('departId'); //班级ID
-		// let additionalId = urlParams('additionalId'); //附加作业ID
-		// let scene = urlParams("scene") || 'create'; //来源
-		// let userInfo = getUserInfo();
-		// let qn_token = getQiniuToken();
-		// let userToken = getUserToken();
-		// let workStatus = 0;
-		// setInterval(function () {
-		// 	qn_token = getQiniuToken();
-		// }, 600 * 1000);
-
+	try{
+		let canShare = true;
+		let uploadParam = {};
+		let workId = urlParams('workId');
+		let unitId = urlParams('unitId');
+		let workFileUrl = urlParams('workFile'); //SB3路径
+		let workName = urlParams('workName'); //作业名
+		if (workName) workName = decodeURIComponent(workName);
+		let departId = urlParams('departId'); //班级ID
+		let additionalId = urlParams('additionalId'); //附加作业ID
+		let scene = urlParams("scene") || 'create'; //来源
+		let userInfo = getUserInfo();
+		let qn_token = getQiniuToken();
+		let userToken = getUserToken();
+		let workStatus = 0;
+		setInterval(function () {
+			qn_token = getQiniuToken();
+			}, 600 * 1000);
+		} catch (e) {
+			console.log(e)
+		}
 		window.scratchConfig = {
 			menubar: {
 				logo: {
@@ -184,7 +187,8 @@
 						}
 					},
 					//可继续新增按钮
-				]
+				],
+				timecount: true
 			},
 			open: true,
 			assertCDN: '/static',

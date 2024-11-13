@@ -112,6 +112,7 @@ import SeeInsideButton from './tw-see-inside.jsx';
 import {notScratchDesktop} from '../../lib/isScratchDesktop.js';
 import ProfileButton from './profile-button.jsx';
 import {APP_NAME} from '../../lib/brand.js';
+import TimeCount from './time-count.jsx';
 
 const ariaMessages = defineMessages({
     tutorials: {
@@ -1063,6 +1064,9 @@ class MenuBar extends React.Component {
                             />
                         ) : []))}
                     </div>
+
+                    {/* 时间计时器 */}
+                    { window.scratchConfig.menubar.timecount && <TimeCount />}
                     {/* tw: add a feedback button */}
                     {/* <div className={styles.menuBarItem}>
                         <a
