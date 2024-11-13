@@ -164,7 +164,40 @@
 				},
 				customButtons: [
 					{
-						show: true, //是否显示
+						show: true,
+						buttonName: '提交',
+						style:{
+							color: 'white',
+							background: 'hsla(30, 100%, 55%, 1)',
+						},
+						handleClick: () => {
+							// requestUpload(3)
+						},
+					},
+					{
+						show: true,
+						buttonName: '保存',
+						style: {
+						  color: 'white',
+						  background: 'hsl(271deg 89% 70%)',
+						},
+						handleClick:()=>{
+						  // requestUpload(0)
+						}
+					  },
+					  {
+						show: true,
+						buttonName: '返回',
+						style: {
+						  color: 'white',
+						  background: 'rgb(90 132 225)',
+						},
+						handleClick:()=>{
+						  window.location.href = '/account/center'
+						}
+					},
+					{
+						show: false, //是否显示
 						buttonName: '分享', //按钮名
 						style: { //按钮样式
 							color: 'white',
