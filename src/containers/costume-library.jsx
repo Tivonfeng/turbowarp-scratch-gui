@@ -16,25 +16,66 @@ const messages = defineMessages({
     }
 });
 
-
 class CostumeLibrary extends React.PureComponent {
     constructor (props) {
         super(props);
         bindAll(this, [
-            'handleItemSelected'
+            'handleItemSelect',
+            'handleLibraryEvent'
         ]);
+        
+        // 初始化静态存储
+        if (!CostumeLibrary.allData) {
+            CostumeLibrary.allData = [];
+            CostumeLibrary.initialDataLoaded = false;
+        }
+        window.scratch.pushCostumesLibrary = data => {
+            const event = new CustomEvent('pushCostumesLibrary', {
+                detail: {data}
+            });
+            document.dispatchEvent(event);
+        };
         this.state = {
-            data: getCostumeLibrary()
+            data: CostumeLibrary.initialDataLoaded ? CostumeLibrary.allData : getCostumeLibrary()
         };
     }
+
     componentDidMount () {
-        if (this.state.data.then) {
-            this.state.data.then(data => this.setState({
-                data
-            }));
+        document.addEventListener('pushCostumesLibrary', this.handleLibraryEvent);
+
+        if (this.state.data.then && !CostumeLibrary.initialDataLoaded) {
+            this.state.data.then(data => {
+                CostumeLibrary.allData = data;
+                
+                this.setState({
+                    data: CostumeLibrary.allData
+                }, () => {
+                    if (window.scratchConfig && window.scratchConfig.assets &&
+                        window.scratchConfig.assets.handleBeforeCostumesLibraryOpen) {
+                        window.scratchConfig.assets.handleBeforeCostumesLibraryOpen(CostumeLibrary.initialDataLoaded);
+                        CostumeLibrary.initialDataLoaded = true;
+                    }
+                });
+            });
+        } else if (window.scratchConfig && window.scratchConfig.assets &&
+            window.scratchConfig.assets.handleBeforeCostumesLibraryOpen) {
+            window.scratchConfig.assets.handleBeforeCostumesLibraryOpen(CostumeLibrary.initialDataLoaded);
         }
     }
-    handleItemSelected (item) {
+
+    componentWillUnmount () {
+        document.removeEventListener('pushCostumesLibrary', this.handleLibraryEvent);
+    }
+
+    handleLibraryEvent = e => {
+        const newData = e.detail.data;
+        CostumeLibrary.allData = [...CostumeLibrary.allData, ...newData];
+        this.setState({
+            data: CostumeLibrary.allData
+        });
+    };
+
+    handleItemSelect (item) {
         const vmCostume = {
             name: item.name,
             rotationCenterX: item.rotationCenterX,
@@ -44,6 +85,7 @@ class CostumeLibrary extends React.PureComponent {
         };
         this.props.vm.addCostumeFromLibrary(item.md5ext, vmCostume);
     }
+
     render () {
         return (
             <LibraryComponent
@@ -51,9 +93,9 @@ class CostumeLibrary extends React.PureComponent {
                 id="costumeLibrary"
                 tags={spriteTags}
                 title={this.props.intl.formatMessage(messages.libraryTitle)}
-                removedTrademarks
-                onItemSelected={this.handleItemSelected}
+                onItemSelected={this.handleItemSelect}
                 onRequestClose={this.props.onRequestClose}
+                removedTrademarks
             />
         );
     }

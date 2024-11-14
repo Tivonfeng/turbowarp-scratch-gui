@@ -16,24 +16,65 @@ const messages = defineMessages({
     }
 });
 
-
 class BackdropLibrary extends React.Component {
     constructor (props) {
         super(props);
         bindAll(this, [
-            'handleItemSelect'
+            'handleItemSelect',
+            'handleLibraryEvent'
         ]);
+        
+        // 初始化静态存储
+        if (!BackdropLibrary.allData) {
+            BackdropLibrary.allData = [];
+            BackdropLibrary.initialDataLoaded = false;
+        }
+        window.scratch.pushBackdropsLibrary = data => {
+            const event = new CustomEvent('pushBackdropsLibrary', {
+                detail: {data}
+            });
+            document.dispatchEvent(event);
+        };
         this.state = {
-            data: getBackdropLibrary()
+            data: BackdropLibrary.initialDataLoaded ? BackdropLibrary.allData : getBackdropLibrary()
         };
     }
+
     componentDidMount () {
-        if (this.state.data.then) {
-            this.state.data.then(data => this.setState({
-                data
-            }));
+        document.addEventListener('pushBackdropsLibrary', this.handleLibraryEvent);
+
+        if (this.state.data.then && !BackdropLibrary.initialDataLoaded) {
+            this.state.data.then(data => {
+                BackdropLibrary.allData = data;
+                
+                this.setState({
+                    data: BackdropLibrary.allData
+                }, () => {
+                    if (window.scratchConfig && window.scratchConfig.assets &&
+                        window.scratchConfig.assets.handleBeforeBackdropsLibraryOpen) {
+                        window.scratchConfig.assets.handleBeforeBackdropsLibraryOpen(BackdropLibrary.initialDataLoaded);
+                        BackdropLibrary.initialDataLoaded = true;
+                    }
+                });
+            });
+        } else if (window.scratchConfig && window.scratchConfig.assets &&
+            window.scratchConfig.assets.handleBeforeBackdropsLibraryOpen) {
+            window.scratchConfig.assets.handleBeforeBackdropsLibraryOpen(BackdropLibrary.initialDataLoaded);
         }
     }
+
+    componentWillUnmount () {
+        document.removeEventListener('pushBackdropsLibrary', this.handleLibraryEvent);
+    }
+
+    handleLibraryEvent = e => {
+        const newData = e.detail.data;
+        BackdropLibrary.allData = [...BackdropLibrary.allData, ...newData];
+        this.setState({
+            data: BackdropLibrary.allData
+        });
+    };
+
     handleItemSelect (item) {
         const vmBackdrop = {
             name: item.name,
@@ -42,9 +83,9 @@ class BackdropLibrary extends React.Component {
             bitmapResolution: item.bitmapResolution,
             skinId: null
         };
-        // Do not switch to stage, just add the backdrop
         this.props.vm.addBackdrop(item.md5ext, vmBackdrop);
     }
+
     render () {
         return (
             <LibraryComponent

@@ -397,13 +397,37 @@
                 },
                 open: true,
                 defaultProjectURL: "./static/project.sb3",
-                asserts: {
-                    // assetHost: 'http://qiniuyun.lqcode.fun/',
-                    handleBeforeSpriteLibraryOpen() {
+                assets: {
+                    assetHost: 'http://qiniuyun.lqcode.fun/',
+                    handleBeforeSpriteLibraryOpen(initialDataLoaded) {
                         console.log("角色库打开");
                         //追加素材库
-                        // window.scratch.pushSpriteLibrary()
-                        return true;
+						if (!initialDataLoaded) {
+						window.getScratchAssets(4, (data) => {
+                                window.scratch.pushSpriteLibrary(data);
+                                return true;
+                            });
+                        }
+                    },
+                    handleBeforeBackdropsLibraryOpen(initialDataLoaded) {
+                        console.log("背景库打开");
+                        //追加素材库
+						if (!initialDataLoaded) {
+						window.getScratchAssets(1, (data) => {
+                            window.scratch.pushBackdropsLibrary(data);
+                            return true;
+                            });
+                        }
+                    },
+                    handleBeforeCostumesLibraryOpen(initialDataLoaded) {
+                        console.log("造型库打开");
+                        //追加素材库
+						if (!initialDataLoaded) {
+						window.getScratchAssets(3, (data) => {
+                            window.scratch.pushCostumesLibrary(data);
+                            return true;
+                            });
+                        }
                     },
                 },
             };

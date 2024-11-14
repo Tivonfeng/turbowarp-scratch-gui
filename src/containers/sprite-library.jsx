@@ -22,40 +22,72 @@ class SpriteLibrary extends React.PureComponent {
     constructor (props) {
         super(props);
         bindAll(this, [
-            'handleItemSelect'
+            'handleItemSelect',
+            'handleLibraryEvent'
         ]);
+        
+        // 初始化静态存储
+        if (!SpriteLibrary.allData) {
+            SpriteLibrary.allData = [];
+            SpriteLibrary.initialDataLoaded = false;
+        }
+        window.scratch.pushSpriteLibrary = data => {
+            const event = new CustomEvent('pushSpriteLibrary', {
+                detail: {data}
+            });
+            document.dispatchEvent(event);
+        };
         this.state = {
-            data: getSpriteLibrary()
+            data: SpriteLibrary.initialDataLoaded ? SpriteLibrary.allData : getSpriteLibrary()
         };
     }
-    componentDidMount () {
-        if (this.state.data.then) {
 
-            document.addEventListener('pushSpriteLibrary', e => {
-                const data = e.detail.data.concat(this.state.data.then ? [] : this.state.data);
-                this.setState({
-                    data
-                });
-            });
-            window.scratch.pushSpriteLibrary = data => {
-                const event = new CustomEvent('pushSpriteLibrary', {detail: {data}});
-                document.dispatchEvent(event);
-            };
+
+    componentDidMount () {
+        // 添加事件监听
+        document.addEventListener('pushSpriteLibrary', this.handleLibraryEvent);
+
+        // 处理初始数据加载
+        if (this.state.data.then && !SpriteLibrary.initialDataLoaded) {
             this.state.data.then(data => {
+                SpriteLibrary.allData = data;
                 this.setState({
-                    data
+                    data: SpriteLibrary.allData
+                }, () => {
+                    // 初始数据加载完成后触发配置的回调
+                    if (window.scratchConfig && window.scratchConfig.assets &&
+                        window.scratchConfig.assets.handleBeforeSpriteLibraryOpen) {
+                        window.scratchConfig.assets.handleBeforeSpriteLibraryOpen(SpriteLibrary.initialDataLoaded);
+                        SpriteLibrary.initialDataLoaded = true;
+                    }
                 });
-                window.scratchConfig.asserts.handleBeforeSpriteLibraryOpen();
             });
+        } else if (window.scratchConfig && window.scratchConfig.assets &&
+            window.scratchConfig.assets.handleBeforeSpriteLibraryOpen) {
+            window.scratchConfig.assets.handleBeforeSpriteLibraryOpen(SpriteLibrary.initialDataLoaded);
         }
     }
+
+    componentWillUnmount () {
+        // 清理事件监听
+        document.removeEventListener('pushSpriteLibrary', this.handleLibraryEvent);
+    }
+
+    handleLibraryEvent = e => {
+        const newData = e.detail.data;
+        // 合并新数据到静态存储
+        SpriteLibrary.allData = [...SpriteLibrary.allData, ...newData];
+        this.setState({
+            data: SpriteLibrary.allData
+        });
+    };
     handleItemSelect (item) {
-        // Randomize position of library sprite
         randomizeSpritePosition(item);
         this.props.vm.addSprite(JSON.stringify(item)).then(() => {
             this.props.onActivateBlocksTab();
         });
     }
+
     render () {
         return (
             <LibraryComponent
