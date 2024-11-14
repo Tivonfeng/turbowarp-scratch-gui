@@ -26,3 +26,7 @@ npm-*
 
 # for act
 .secrets
+
+# for scratch
+*.zip
+scratch4/

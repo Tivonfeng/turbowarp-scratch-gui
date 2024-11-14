@@ -1,441 +1,440 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="google" value="notranslate" />
-        <meta
-            name="description"
-            content="<%= htmlWebpackPlugin.options.APP_NAME %> is a Scratch mod with a compiler to run projects faster, dark mode for your eyes, a bunch of addons to improve the editor, and more."
-        />
-        <title><%= htmlWebpackPlugin.options.title %></title>
-        <link
-            rel="apple-touch-icon"
-            href="<%= htmlWebpackPlugin.options.root %>images/apple-touch-icon.png"
-        />
-        <% if (htmlWebpackPlugin.options.root==="/" ||
-        htmlWebpackPlugin.options.root==="" ) { %>
-        <link
-            rel="manifest"
-            href="<%= htmlWebpackPlugin.options.root %>manifest.webmanifest"
-        />
-        <% } %>
-        <style>
-            .splash-screen {
-                position: absolute;
-                width: 100%;
-                height: 100%;
-                top: 0;
-                left: 0;
-                display: flex;
-                flex-direction: column;
-                gap: 1rem;
-                align-items: center;
-                justify-content: center;
-                text-align: center;
-                font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-            }
 
-            .splash-screen[hidden] {
-                display: none;
-            }
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta name="google" value="notranslate" />
+	<meta name="description"
+		content="<%= htmlWebpackPlugin.options.APP_NAME %> is a Scratch mod with a compiler to run projects faster, dark mode for your eyes, a bunch of addons to improve the editor, and more." />
+	<title>
+		<%= htmlWebpackPlugin.options.title %>
+	</title>
+	<link rel="apple-touch-icon" href="<%= htmlWebpackPlugin.options.root %>images/apple-touch-icon.png" />
+	<% if (htmlWebpackPlugin.options.root==="/" || htmlWebpackPlugin.options.root==="" ) { %>
+		<link rel="manifest" href="<%= htmlWebpackPlugin.options.root %>manifest.webmanifest" />
+		<% } %>
+			<style>
+				.splash-screen {
+					position: absolute;
+					width: 100%;
+					height: 100%;
+					top: 0;
+					left: 0;
+					display: flex;
+					flex-direction: column;
+					gap: 1rem;
+					align-items: center;
+					justify-content: center;
+					text-align: center;
+					font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+				}
 
-            .splash-screen[data-theme="dark"] {
-                background-color: #333;
-                color: white;
-            }
+				.splash-screen[hidden] {
+					display: none;
+				}
 
-            .splash-screen > * {
-                max-width: 80%;
-            }
+				.splash-screen[data-theme="dark"] {
+					background-color: #333;
+					color: white;
+				}
 
-            .splash-spinner:after {
-                content: " ";
-                display: block;
-                width: 64px;
-                height: 64px;
-                border-radius: 50%;
-                border: 6px solid;
-                border-color: currentColor transparent currentColor transparent;
-                animation: splash-spinner 1.2s linear infinite;
-            }
+				.splash-screen>* {
+					max-width: 80%;
+				}
 
-            @keyframes splash-spinner {
-                0% {
-                    transform: rotate(0deg);
-                }
+				.splash-spinner:after {
+					content: " ";
+					display: block;
+					width: 64px;
+					height: 64px;
+					border-radius: 50%;
+					border: 6px solid;
+					border-color: currentColor transparent currentColor transparent;
+					animation: splash-spinner 1.2s linear infinite;
+				}
 
-                100% {
-                    transform: rotate(360deg);
-                }
-            }
+				@keyframes splash-spinner {
+					0% {
+						transform: rotate(0deg);
+					}
 
-            .splash-error-title {
-                font-weight: bold;
-            }
+					100% {
+						transform: rotate(360deg);
+					}
+				}
 
-            .splash-error-title a {
-                color: inherit;
-            }
+				.splash-error-title {
+					font-weight: bold;
+				}
 
-            .splash-errors {
-                font-family: monospace;
-            }
+				.splash-error-title a {
+					color: inherit;
+				}
 
-            .splash-error-list {
-                white-space: pre-wrap;
-            }
+				.splash-errors {
+					font-family: monospace;
+				}
 
-            .splash-reset {
-                color: inherit;
-                background: none;
-                padding: 0;
-                margin: 0;
-                border: none;
-                text-decoration: underline;
-                cursor: pointer;
-            }
+				.splash-error-list {
+					white-space: pre-wrap;
+				}
 
-            .splash-reset:disabled {
-                opacity: 0.8;
-            }
-        </style>
-        <script async src="//api.paas.plus/js/errlog.js"></script>
-        <script src="../js/jquery.min.js"></script>
-        <script src="../js/jquery.cokie.min.js"></script>
-        <script src="../js/jquery.qrcode.min.js"></script>
-        <script src="../js/qiniu.min.js"></script>
-        <script src="../js/common.js?v=27"></script>
-        <script>
-			let canShare = true;
-			let uploadParam = {};
+				.splash-reset {
+					color: inherit;
+					background: none;
+					padding: 0;
+					margin: 0;
+					border: none;
+					text-decoration: underline;
+					cursor: pointer;
+				}
 
-			let workId = urlParams("workId");
-			let unitId = urlParams("unitId");
-			let workFileUrl = urlParams("workFile"); //SB3路径
-			let workName = urlParams("workName"); //作业名
-			if (workName) workName = decodeURIComponent(workName);
-			let departId = urlParams("departId"); //班级ID
-			let additionalId = urlParams("additionalId"); //附加作业ID
-			let scene = urlParams("scene") || "create"; //来源
+				.splash-reset:disabled {
+					opacity: 0.8;
+				}
+			</style>
+			<script async src="//api.paas.plus/js/errlog.js"></script>
+			<script src="../js/jquery.min.js"></script>
+			<script src="../js/jquery.cokie.min.js"></script>
+			<script src="../js/jquery.qrcode.min.js"></script>
+			<script src="../js/qiniu.min.js"></script>
+			<script src="../js/common.js?v=27"></script>
+			<script>
+				let canShare = true;
+				let uploadParam = {};
 
-			let userInfo = getUserInfo();
-			let qn_token = getQiniuToken();
-			let userToken = getUserToken();
-			let workStatus = 0;
-			setInterval(function () {
-				qn_token = getQiniuToken();
-			}, 600 * 1000);
+				let workId = urlParams("workId");
+				let unitId = urlParams("unitId");
+				let workFileUrl = urlParams("workFile"); //SB3路径
+				let workName = urlParams("workName"); //作业名
+				if (workName) workName = decodeURIComponent(workName);
+				let departId = urlParams("departId"); //班级ID
+				let additionalId = urlParams("additionalId"); //附加作业ID
+				let scene = urlParams("scene") || "create"; //来源
 
-            let observer = {
-                next(res) {},
-                error(err) {
-                    console.log(1, err);
-                },
-                complete(res) {
-                    console.log(res);
-                    if (res.key.endsWith(".jpg")) {
-                        uploadParam.coverKey = uploadFile(
-                            res.key,
-                            "学生作业-封面",
-                            res.key,
-                            2
-                        );
-                    } else {
-                        uploadParam.projectKey = uploadFile(
-                            res.key,
-                            "学生作业-sb3",
-                            res.key,
-                            2
-                        );
-                    }
-                    uploadWork();
-                },
-            };
+				let userInfo = getUserInfo();
+				let qn_token = getQiniuToken();
+				let userToken = getUserToken();
+				let workStatus = 0;
+				setInterval(function () {
+					qn_token = getQiniuToken();
+				}, 600 * 1000);
 
-            function handleFileUploaded(res) {
-                console.log(res);
-                if (res.success) {
-                    let key = res.message;
-                    if (key.endsWith(".jpg")) {
-                        uploadParam.coverKey = uploadFile(
-                            key,
-                            "学生作业-封面",
-                            key,
-                            1
-                        );
-                    } else {
-                        uploadParam.projectKey = uploadFile(
-                            key,
-                            "学生作业-sb3",
-                            key,
-                            1
-                        );
-                    }
-                    uploadWork();
-                } else {
-                    alert("上传失败：" + res.message);
-                }
-            }
+				let observer = {
+					next(res) { },
+					error(err) {
+						console.log(1, err);
+					},
+					complete(res) {
+						console.log(res);
+						if (res.key.endsWith(".jpg")) {
+							uploadParam.coverKey = uploadFile(
+								res.key,
+								"学生作业-封面",
+								res.key,
+								2
+							);
+						} else {
+							uploadParam.projectKey = uploadFile(
+								res.key,
+								"学生作业-sb3",
+								res.key,
+								2
+							);
+						}
+						uploadWork();
+					},
+				};
 
-            //请求提交作业
-            function requestUpload(status) {
-                qn_token = getQiniuToken();
-                workStatus = status;
-                $(".scratch-filter").show();
-                $(".uploading").show();
-                let uuid = window.uuid();
-                uploadParam.projectTitle = window.scratch.getProjectName();
-                let defaultUploadType = getSysConfig("uploadType");
-                window.scratch.getProjectCoverBlob((cover) => {
-                    if (defaultUploadType == "qiniu") {
-                        upload2Qiniu(
-                            cover,
-                            "project3/" + uuid + ".jpg",
-                            uploadParam.projectTitle,
-                            observer
-                        );
-                    } else {
-                        update2Local(
-                            cover,
-                            uploadParam.projectTitle + ".jpg",
-                            "project3",
-                            handleFileUploaded
-                        );
-                    }
-                });
-                window.scratch.getProjectFile((file) => {
-                    if (defaultUploadType == "qiniu") {
-                        upload2Qiniu(
-                            file,
-                            "project3/" + uuid + ".sb3",
-                            uploadParam.projectTitle,
-                            observer
-                        );
-                    } else {
-                        update2Local(
-                            file,
-                            uploadParam.projectTitle + ".sb3",
-                            "project3",
-                            handleFileUploaded
-                        );
-                    }
-                });
-            }
+				function handleFileUploaded(res) {
+					console.log(res);
+					if (res.success) {
+						let key = res.message;
+						if (key.endsWith(".jpg")) {
+							uploadParam.coverKey = uploadFile(
+								key,
+								"学生作业-封面",
+								key,
+								1
+							);
+						} else {
+							uploadParam.projectKey = uploadFile(
+								key,
+								"学生作业-sb3",
+								key,
+								1
+							);
+						}
+						uploadWork();
+					} else {
+						alert("上传失败：" + res.message);
+					}
+				}
 
-            //上传作业
-            function uploadWork() {
-                if (!uploadParam.projectKey || !uploadParam.coverKey) {
-                    return;
-                }
-                $.ajax({
-                    url: "/api/teaching/teachingWork/submit",
-                    type: "POST",
-                    dataType: "json",
-                    contentType: "application/json",
-                    beforeSend: function (request) {
-                        request.setRequestHeader("X-Access-Token", userToken);
-                    },
-                    data: JSON.stringify({
-                        courseId: unitId,
-                        workCover: uploadParam.coverKey,
-                        workFile: uploadParam.projectKey,
-                        workName: uploadParam.projectTitle,
-                        timeCount: window.scratch.getTimeCount(),
-                        id: workId,
-                        workType: 2,
-                        workStatus: workStatus,
-                        departId: departId,
-                        additionalId: additionalId,
-                        workScene: scene,
-                        hasCloudData: window.vm.runtime.hasCloudData(), //是否包含云变量
-                    }),
-                    success: function (res) {
-                        canShare = true;
-                        if (res.code == 200) {
-                            //如果包含云变量
-                            if (window.vm.runtime.hasCloudData()) {
-                                workId = res.result.id;
-                                //更新cloudId
-                                window.scratch.setCloudId(workId);
-                            }
-                            $("#projectTitle").html(projectTitle);
-                            let shareUrl =
-                                window.location.protocol +
-                                "//" +
-                                window.location.hostname +
-                                (window.location.port
-                                    ? ":" + window.location.port
-                                    : "") +
-                                "/work-detail?id=" +
-                                res.result.id;
-                            createCode("qrcode", shareUrl);
-                            let img = document.createElement("img");
-                            img.id = "qrCodeIco";
-                            img.src = "/logo.png";
-                            qrcode.appendChild(img);
-                            $(".scratch-filter").show();
-                            $(".release-success").show();
-                        } else {
-                            $(".release-false").show();
-                        }
-                    },
-                    error: function () {
-                        $(".release-false").show();
-                    },
-                    complete: function () {
-                        $(".uploading").hide();
-                    },
-                });
-            }
-            window.scratchConfig = {
-                menubar: {
-                    logo: {
-                        show: true,
-                        url: "./static/logo.png",
-                        handleClickLogo: () => {
-                            console.log("点击LOGO");
-                            //TODO 跳转
-                        },
-                    },
-                    shareButton: {
-                        show: false,
-                        handleClickShare: () => {
-                            console.log("分享按钮");
-                            /*window.scratch.getProjectCover(cover => {
-						  //TODO 获取到作品截图
-						  console.log(cover)
-						})
-						window.scratch.getProjectFile(file => {
-						  //TODO 获取到项目文件
-						  console.log(file)
-						}) */
-                        },
-                    },
-                    //我的物品按钮
-                    myStuff: {
-                        show: true, //是否显示
-                        url: "/account/center", //跳转的连接
-                    },
-                    //用户头像按钮
-                    userAvatar: {
-                        show: true, //是否显示
-                        username: (userInfo && userInfo.realname) || '未登录',
-                        avatar:
-                            (userInfo && getFileAccessHttpUrl(userInfo.avatar)) ||
-                            "./static/avatar.png",
-                        handleClick() {
-                            //点击头像，可以弹出登录框等操作
-                            console.log("点击头像");
-                            window.open("/account/settings/BaseSetting");
-                        },
-                    },
-                    customButtons: [
-                        {
-                            show: true,
-                            buttonName: "提交",
-                            style: {
-                                color: "white",
-                                background: "hsla(30, 100%, 55%, 1)",
-                            },
-                            handleClick: () => {
-                                requestUpload(3)
-                            },
-                        },
-                        {
-                            show: true,
-                            buttonName: "保存",
-                            style: {
-                                color: "white",
-                                background: "hsl(271deg 89% 70%)",
-                            },
-                            handleClick: () => {
-                                requestUpload(0)
-                            },
-                        },
-                        {
-                            show: true,
-                            buttonName: "返回",
-                            style: {
-                                color: "white",
-                                background: "rgb(90 132 225)",
-                            },
-                            handleClick: () => {
-                                window.location.href = "/account/center";
-                            },
-                        },
-                        {
-                            show: false, //是否显示
-                            buttonName: "分享", //按钮名
-                            style: {
-                                //按钮样式
-                                color: "white",
-                                background: "hsla(30, 100%, 55%, 1)",
-                            },
-                            handleClick: () => {
-                                //按钮事件
-                                console.log("自定义按钮1");
-                                console.log("分享按钮");
-                                /*window.scratch.getProjectCover(cover => {
+				//请求提交作业
+				function requestUpload(status) {
+					qn_token = getQiniuToken();
+					workStatus = status;
+					$(".scratch-filter").show();
+					$(".uploading").show();
+					let uuid = window.uuid();
+					uploadParam.projectTitle = window.scratch.getProjectName();
+					let defaultUploadType = getSysConfig("uploadType");
+					window.scratch.getProjectCoverBlob((cover) => {
+						if (defaultUploadType == "qiniu") {
+							upload2Qiniu(
+								cover,
+								"project3/" + uuid + ".jpg",
+								uploadParam.projectTitle,
+								observer
+							);
+						} else {
+							update2Local(
+								cover,
+								uploadParam.projectTitle + ".jpg",
+								"project3",
+								handleFileUploaded
+							);
+						}
+					});
+					window.scratch.getProjectFile((file) => {
+						if (defaultUploadType == "qiniu") {
+							upload2Qiniu(
+								file,
+								"project3/" + uuid + ".sb3",
+								uploadParam.projectTitle,
+								observer
+							);
+						} else {
+							update2Local(
+								file,
+								uploadParam.projectTitle + ".sb3",
+								"project3",
+								handleFileUploaded
+							);
+						}
+					});
+				}
+
+				//上传作业
+				function uploadWork() {
+					if (!uploadParam.projectKey || !uploadParam.coverKey) {
+						return;
+					}
+					const data = JSON.stringify({
+						courseId: unitId,
+						workCover: uploadParam.coverKey,
+						workFile: uploadParam.projectKey,
+						workName: uploadParam.projectTitle,
+						timeCount: window.scratch.getTimeCount(),
+						id: workId,
+						workType: 2,
+						workStatus: workStatus,
+						departId: departId,
+						additionalId: additionalId,
+						workScene: scene,
+						hasCloudData: window.vm.runtime.hasCloudData(), //是否包含云变量
+					});
+					console.log('data-------->', data);
+					$.ajax({
+						url: "/api/teaching/teachingWork/submit",
+						type: "POST",
+						dataType: "json",
+						contentType: "application/json",
+						beforeSend: function (request) {
+							request.setRequestHeader("X-Access-Token", userToken);
+						},
+						data: data,
+						success: function (res) {
+							canShare = true;
+							if (res.code == 200) {
+								//如果包含云变量
+								if (window.vm.runtime.hasCloudData()) {
+									workId = res.result.id;
+									//更新cloudId
+									window.scratch.setCloudId(workId);
+								}
+								$("#projectTitle").html(projectTitle);
+								let shareUrl =
+									window.location.protocol +
+									"//" +
+									window.location.hostname +
+									(window.location.port
+										? ":" + window.location.port
+										: "") +
+									"/work-detail?id=" +
+									res.result.id;
+								createCode("qrcode", shareUrl);
+								let img = document.createElement("img");
+								img.id = "qrCodeIco";
+								img.src = "/logo.png";
+								qrcode.appendChild(img);
+								$(".scratch-filter").show();
+								$(".release-success").show();
+							} else {
+								$(".release-false").show();
+							}
+						},
+						error: function () {
+							$(".release-false").show();
+						},
+						complete: function () {
+							$(".uploading").hide();
+						},
+					});
+				}
+				window.scratchConfig = {
+					menubar: {
+						logo: {
+							show: true,
+							url: "./static/logo.png",
+							handleClickLogo: () => {
+								console.log("点击LOGO");
+								//TODO 跳转
+							},
+						},
+						shareButton: {
+							show: false,
+							handleClickShare: () => {
+								console.log("分享按钮");
+								/*window.scratch.getProjectCover(cover => {
 							  //TODO 获取到作品截图
+							  console.log(cover)
 							})
 							window.scratch.getProjectFile(file => {
 							  //TODO 获取到项目文件
-							})
-							  */
-                                // 获取到项目名
-                                var projectName =
-                                    window.scratch.getProjectName();
-                                console.log(projectName);
-                                window.scratch.setProjectName("测试项目");
-                                console.log(window.scratch.getTimeCount());
-                            },
-                        },
-                        //可继续新增按钮
-                    ],
-                    timecount: true,
-                },
-                open: true,
-                defaultProjectURL: "./static/project.sb3",
-                assets: {
-                    assetHost: 'http://qiniuyun.lqcode.fun/',
-                    handleBeforeSpriteLibraryOpen(initialDataLoaded) {
-                        console.log("角色库打开");
-                        //追加素材库
-						if (!initialDataLoaded) {
-						window.getScratchAssets(4, (data) => {
-                                window.scratch.pushSpriteLibrary(data);
-                                return true;
-                            });
-                        }
-                    },
-                    handleBeforeBackdropsLibraryOpen(initialDataLoaded) {
-                        console.log("背景库打开");
-                        //追加素材库
-						if (!initialDataLoaded) {
-						window.getScratchAssets(1, (data) => {
-                            window.scratch.pushBackdropsLibrary(data);
-                            return true;
-                            });
-                        }
-                    },
-                    handleBeforeCostumesLibraryOpen(initialDataLoaded) {
-                        console.log("造型库打开");
-                        //追加素材库
-						if (!initialDataLoaded) {
-						window.getScratchAssets(3, (data) => {
-                            window.scratch.pushCostumesLibrary(data);
-                            return true;
-                            });
-                        }
-                    },
-                },
-            };
-        </script>
-    </head>
+							  console.log(file)
+							}) */
+							},
+						},
+						//我的物品按钮
+						communityButton: {
+							show: false, //是否显示
+						},
+						myStuff: {
+							show: true, //是否显示
+							url: "/account/center", //跳转的连接
+						},
+						//用户头像按钮
+						userAvatar: {
+							show: true, //是否显示
+							username: (userInfo && userInfo.realname) || '未登录',
+							avatar:
+								(userInfo && getFileAccessHttpUrl(userInfo.avatar)) ||
+								"./static/avatar.png",
+							handleClick() {
+								//点击头像，可以弹出登录框等操作
+								console.log("点击头像");
+								window.open("/account/settings/BaseSetting");
+							},
+						},
+						customButtons: [
+							{
+								show: true,
+								buttonName: "提交",
+								style: {
+									color: "white",
+									background: "hsla(30, 100%, 55%, 1)",
+								},
+								handleClick: () => {
+									requestUpload(3)
+								},
+							},
+							{
+								show: true,
+								buttonName: "保存",
+								style: {
+									color: "white",
+									background: "hsl(271deg 89% 70%)",
+								},
+								handleClick: () => {
+									requestUpload(0)
+								},
+							},
+							{
+								show: true,
+								buttonName: "返回",
+								style: {
+									color: "white",
+									background: "rgb(90 132 225)",
+								},
+								handleClick: () => {
+									window.location.href = "/account/center";
+								},
+							},
+							{
+								show: false, //是否显示
+								buttonName: "分享", //按钮名
+								style: {
+									//按钮样式
+									color: "white",
+									background: "hsla(30, 100%, 55%, 1)",
+								},
+								handleClick: () => {
+									//按钮事件
+									console.log("自定义按钮1");
+									console.log("分享按钮");
+									/*window.scratch.getProjectCover(cover => {
+								  //TODO 获取到作品截图
+								})
+								window.scratch.getProjectFile(file => {
+								  //TODO 获取到项目文件
+								})
+								  */
+									// 获取到项目名
+									var projectName =
+										window.scratch.getProjectName();
+									console.log(projectName);
+									window.scratch.setProjectName("测试项目");
+									console.log(window.scratch.getTimeCount());
+								},
+							},
+							//可继续新增按钮
+						],
+						timecount: true,
+					},
+					open: true,
+					defaultProjectURL: "./static/project.sb3",
+					assets: {
+						assetHost: 'http://qiniuyun.lqcode.fun/',
+						handleBeforeSpriteLibraryOpen(initialDataLoaded) {
+							console.log("角色库打开");
+							//追加素材库
+							if (!initialDataLoaded) {
+								window.getScratchAssets(4, (data) => {
+									window.scratch.pushSpriteLibrary(data);
+									return true;
+								});
+							}
+						},
+						handleBeforeBackdropsLibraryOpen(initialDataLoaded) {
+							console.log("背景库打开");
+							//追加素材库
+							if (!initialDataLoaded) {
+								window.getScratchAssets(1, (data) => {
+									window.scratch.pushBackdropsLibrary(data);
+									return true;
+								});
+							}
+						},
+						handleBeforeCostumesLibraryOpen(initialDataLoaded) {
+							console.log("造型库打开");
+							//追加素材库
+							if (!initialDataLoaded) {
+								window.getScratchAssets(3, (data) => {
+									window.scratch.pushCostumesLibrary(data);
+									return true;
+								});
+							}
+						},
+					},
+				};
+			</script>
+</head>
 
-    <body>
-        <!-- <noscript>
+<body>
+	<!-- <noscript>
       <div class="splash-screen">
         <div>
           <h1><%= htmlWebpackPlugin.options.APP_NAME %> requires JavaScript</h1>
@@ -444,112 +443,164 @@
       </div>
     </noscript> -->
 
-        <div class="splash-screen spash-waiting-for-js" hidden>
-            <div class="splash-spinner"></div>
+	<div class="splash-screen spash-waiting-for-js" hidden>
+		<div class="splash-spinner"></div>
 
-            <div class="splash-error-title" hidden>
-                Something went wrong.
-                <a
-                    href="https://scratch.mit.edu/users/GarboMuffin/#comments"
-                    target="_blank"
-                    rel="noreferrer"
-                    >Please report</a
-                >
-                with the information below.
-            </div>
-            <div class="splash-errors" hidden></div>
-            <button class="splash-reset" hidden>
-                Click here to reset caches (can fix some errors)
-            </button>
-        </div>
+		<div class="splash-error-title" hidden>
+			Something went wrong.
+			<a href="https://scratch.mit.edu/users/GarboMuffin/#comments" target="_blank" rel="noreferrer">Please
+				report</a>
+			with the information below.
+		</div>
+		<div class="splash-errors" hidden></div>
+		<button class="splash-reset" hidden>
+			Click here to reset caches (can fix some errors)
+		</button>
+	</div>
 
-        <script>
-            (function () {
-            	'use strict';
+	<script>
+		(function () {
+			'use strict';
 
-            	var theme = '';
-            	var accent = '#ff4c4c';
+			var theme = '';
+			var accent = '#ff4c4c';
 
-            	try {
-            		var themeSetting = localStorage.getItem('tw:theme');
-            	} catch (e) {
-            		// ignore
-            	}
-            	if (themeSetting === 'light') {
-            		theme = 'light';
-            	} else if (themeSetting === 'dark') {
-            		theme = 'dark';
-            	} else if (themeSetting) {
-            		try {
-            			var parsed = JSON.parse(themeSetting);
-            			if (parsed.accent === 'purple') {
-            				accent = '#855cd6';
-            			} else if (parsed.accent === 'blue') {
-            				accent = '#4c97ff';
-            			}
-            			if (parsed.gui === 'dark' || parsed.gui === 'light') {
-            				theme = parsed.gui;
-            			}
-            		} catch (e) {
-            			// ignore
-            		}
-            	}
+			try {
+				var themeSetting = localStorage.getItem('tw:theme');
+			} catch (e) {
+				// ignore
+			}
+			if (themeSetting === 'light') {
+				theme = 'light';
+			} else if (themeSetting === 'dark') {
+				theme = 'dark';
+			} else if (themeSetting) {
+				try {
+					var parsed = JSON.parse(themeSetting);
+					if (parsed.accent === 'purple') {
+						accent = '#855cd6';
+					} else if (parsed.accent === 'blue') {
+						accent = '#4c97ff';
+					}
+					if (parsed.gui === 'dark' || parsed.gui === 'light') {
+						theme = parsed.gui;
+					}
+				} catch (e) {
+					// ignore
+				}
+			}
 
-            	if (!theme) {
-            		theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-            	}
+			if (!theme) {
+				theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+			}
 
-            	var splash = document.querySelector('.spash-waiting-for-js');
-            	splash.setAttribute('data-theme', theme);
-            	if (theme !== 'dark') {
+			var splash = document.querySelector('.spash-waiting-for-js');
+			splash.setAttribute('data-theme', theme);
+			if (theme !== 'dark') {
                     <% if (htmlWebpackPlugin.options.isEditor) { %>
-            			splash.style.backgroundColor = accent;
-            			splash.style.color = 'white';
+					splash.style.backgroundColor = accent;
+					splash.style.color = 'white';
                     <% } else { %>
-            			splash.style.color = accent;
+					splash.style.color = accent;
                     <% } %>
                   }
-            	splash.hidden = false;
+			splash.hidden = false;
 
-            	var splashErrorTitle = document.querySelector('.splash-error-title');
-            	var splashError = document.querySelector('.splash-errors');
-            	var splashReset = document.querySelector('.splash-reset');
+			var splashErrorTitle = document.querySelector('.splash-error-title');
+			var splashError = document.querySelector('.splash-errors');
+			var splashReset = document.querySelector('.splash-reset');
 
-            	var totalErrors = 0;
-            	window.onerror = function (event, source, line, col, err) {
-            		if (++totalErrors > 5) return; // dont bother logging more
-            		splashErrorTitle.hidden = splashError.hidden = splashReset.hidden = false;
-            		var el = document.createElement('div');
-            		el.textContent = 'Error (splash) in ' + source + ' (' + line + ':' + col + '): ' + err;
-            		splashError.appendChild(el);
-            	};
-            	splashReset.onclick = function () {
-            		splashReset.disabled = true;
-            		function hardRefresh() {
-            			var search = location.search.replace(/[?&]nocache=\d+/, '');
-            			location.replace(location.pathname + search + (search ? '&' : '?') + 'nocache=' + Math.floor(Math.random() * 100000));
-            		}
-            		if ('serviceWorker' in navigator) {
-            			setTimeout(hardRefresh, 5000);
-            			navigator.serviceWorker.getRegistration(<%= JSON.stringify(htmlWebpackPlugin.options.root) %>)
-            				.then(function (registration) {
-            					if (registration) {
-            						return registration.unregister();
-            					}
-            				})
-            				.then(hardRefresh)
-            				.catch(hardRefresh);
-            		} else {
-            			hardRefresh();
-            		}
-            	};
+			var totalErrors = 0;
+			window.onerror = function (event, source, line, col, err) {
+				if (++totalErrors > 5) return; // dont bother logging more
+				splashErrorTitle.hidden = splashError.hidden = splashReset.hidden = false;
+				var el = document.createElement('div');
+				el.textContent = 'Error (splash) in ' + source + ' (' + line + ':' + col + '): ' + err;
+				splashError.appendChild(el);
+			};
+			splashReset.onclick = function () {
+				splashReset.disabled = true;
+				function hardRefresh() {
+					var search = location.search.replace(/[?&]nocache=\d+/, '');
+					location.replace(location.pathname + search + (search ? '&' : '?') + 'nocache=' + Math.floor(Math.random() * 100000));
+				}
+				if ('serviceWorker' in navigator) {
+					setTimeout(hardRefresh, 5000);
+					navigator.serviceWorker.getRegistration(<%= JSON.stringify(htmlWebpackPlugin.options.root) %>)
+						.then(function (registration) {
+							if (registration) {
+								return registration.unregister();
+							}
+						})
+						.then(hardRefresh)
+						.catch(hardRefresh);
+				} else {
+					hardRefresh();
+				}
+			};
 
-            	window.SplashEnd = () => {
-            		splash.hidden = true;
-            		window.onerror = null;
-            	};
-            })();
-        </script>
-        <div id="app"></div>
-    </body>
+			window.SplashEnd = () => {
+				splash.hidden = true;
+				window.onerror = null;
+			};
+		})();
+	</script>
+
+	<div class="scratch-filter">
+		<div class="loading">
+			<div class="con-box">
+				<h4>请稍后</h4>
+				<span>正在加载中……</span>
+			</div>
+		</div>
+		<div class="uploading">
+			<div class="con-box">
+				<h4>请稍后</h4>
+				<div class="watch-works">
+					<span>上传中……</span>
+				</div>
+			</div>
+			<div class="fault-code">
+				<span>&times</span>
+			</div>
+		</div>
+		<div class="release-success">
+			<div class="con-box">
+				<h4><span id="projectTitle"></span> 提交成功</h4>
+				<p class="ercode-img">
+					<span id="qrcode" style="align-items: center;display: flex; justify-content: center;"></span>
+				</p>
+				<div class="watch-works">
+					<span>微信扫描二维码使用手机体验</span>
+				</div>
+			</div>
+			<div class="fault-code">
+				<span>&times</span>
+			</div>
+		</div>
+		<div class="release-false">
+			<div class="con-box-two">
+				<h4>作品发布失败</h4>
+				<p class="smile-img">
+					<img src="../images/smile.png" alt="smile" />
+				</p>
+				<div class="refresh-release">
+					<span>请重新发布～</span>
+				</div>
+			</div>
+			<div class="fault-code">
+				<span>&times</span>
+			</div>
+		</div>
+	</div>
+	<div id="app"></div>
+</body>
+<script>
+	$('.fault-code').on('click', function () {
+	  uploadParam = {}
+	  $('.scratch-filter').hide()
+	  $('.release-success').hide()
+	  $('.release-false').hide()
+	})
+  </script>
 </html>

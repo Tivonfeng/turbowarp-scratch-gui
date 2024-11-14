@@ -59,6 +59,38 @@ class GUI extends React.Component {
         this.props.onStorageInit(storage);
         this.props.onVmInit(this.props.vm);
         setProjectIdMetadata(this.props.projectId);
+
+
+        window.scratch = window.scratch || {};
+        document.addEventListener('loadProject', e => {
+            this.loadProjectByURL(e.detail.url, e.detail.callback);
+        });
+        document.addEventListener('getProjectFile', e => {
+            this.getProjectFile(e.detail.callback);
+        });
+        document.addEventListener('getProjectCover', e => {
+            this.getProjectCover(e.detail.callback);
+        });
+        document.addEventListener('getProjectCoverBlob', e => {
+            this.getProjectCoverBlob(e.detail.callback);
+        });
+
+        window.scratch.getProjectCover = callback => {
+            const event = new CustomEvent('getProjectCover', {detail: {callback: callback}});
+            document.dispatchEvent(event);
+        };
+        window.scratch.getProjectCoverBlob = callback => {
+            const event = new CustomEvent('getProjectCoverBlob', {detail: {callback: callback}});
+            document.dispatchEvent(event);
+        };
+        window.scratch.getProjectFile = callback => {
+            const event = new CustomEvent('getProjectFile', {detail: {callback: callback}});
+            document.dispatchEvent(event);
+        };
+        window.scratch.loadProject = (url, callback) => {
+            const event = new CustomEvent('loadProject', {detail: {url: url, callback: callback}});
+            document.dispatchEvent(event);
+        };
     }
     componentDidUpdate (prevProps) {
         if (this.props.projectId !== prevProps.projectId) {
@@ -72,6 +104,47 @@ class GUI extends React.Component {
             // At this time the project view in www doesn't need to know when a project is unloaded
             this.props.onProjectLoaded();
         }
+    }
+
+    getProjectFile (callback){
+        this.props.vm.saveProjectSb3().then(res => {
+            callback(res);
+        });
+    }
+    getProjectCover (callback) {
+        this.props.vm.postIOData('video', {forceTransparentPreview: true});
+        this.props.vm.renderer.requestSnapshot(dataURI => {
+            this.props.vm.postIOData('video', {forceTransparentPreview: false});
+            callback(dataURI);
+        });
+        this.props.vm.renderer.draw();
+    }
+    getProjectCoverBlob (callback) {
+        this.props.vm.renderer.draw();
+        const canvas = this.props.vm.renderer.canvas;
+        canvas.toBlob(blob => {
+            callback(blob);
+        });
+    }
+    async loadProjectByURL (url, callback){
+        console.log(`从URL加载项目${url}`);
+        // this.props.onLoadingStarted()
+        // this.props.vm.clear()
+        const r = await fetch(url);
+        const blob = await r.blob();
+        const reader = new FileReader();
+        reader.onload = () => {
+            this.props.vm.loadProject(reader.result).then(() => {
+                // this.props.onUpdateProjectTitle(projectName)
+                //   this.props.onLoadedProject(this.props.loadingState, this.props.canSave);
+                //   setTimeout(() => this.props.onSetProjectUnchanged());
+                //   if (!this.props.isStarted) {
+                //     setTimeout(() => this.props.vm.renderer.draw());
+                //   }
+                callback();
+            });
+        };
+        reader.readAsArrayBuffer(blob);
     }
     render () {
         if (this.props.isError) {
