@@ -27,9 +27,8 @@ const TitledHOC = function (WrappedComponent) {
             window.scratch = window.scratch || {};
             this.handleReceivedProjectTitle(this.props.projectTitle);
             // 监听项目名称改变事件
-            const that = this;
             document.addEventListener('setProjectName', e => {
-                that.props.onChangedProjectTitle(e.detail.projectName);
+                this.props.onChangedProjectTitle(e.detail.projectName);
             });
 
             // 获取项目名称
@@ -40,6 +39,9 @@ const TitledHOC = function (WrappedComponent) {
                 const event = new CustomEvent('setProjectName', {detail: {projectName: projeceName}});
                 document.dispatchEvent(event);
             };
+            if (window.scratchConfig && 'handleProjectTitle' in window.scratchConfig){
+                window.scratchConfig.handleProjectTitle();
+            }
         }
         componentDidUpdate (prevProps) {
             if (this.props.projectTitle !== prevProps.projectTitle) {

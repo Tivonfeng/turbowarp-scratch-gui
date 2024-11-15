@@ -59,7 +59,7 @@ class GUI extends React.Component {
         this.props.onStorageInit(storage);
         this.props.onVmInit(this.props.vm);
         setProjectIdMetadata(this.props.projectId);
-
+        this.isDefaultProjectLoaded = false;
 
         window.scratch = window.scratch || {};
         document.addEventListener('loadProject', e => {
@@ -91,6 +91,9 @@ class GUI extends React.Component {
             const event = new CustomEvent('loadProject', {detail: {url: url, callback: callback}});
             document.dispatchEvent(event);
         };
+        if (window.scratchConfig && 'handleVmInitialized' in window.scratchConfig){
+            window.scratchConfig.handleVmInitialized(this.props.vm);
+        }
     }
     componentDidUpdate (prevProps) {
         if (this.props.projectId !== prevProps.projectId) {
@@ -103,6 +106,19 @@ class GUI extends React.Component {
             // this only notifies container when a project changes from not yet loaded to loaded
             // At this time the project view in www doesn't need to know when a project is unloaded
             this.props.onProjectLoaded();
+
+            // 加载项目回调
+            if (window.scratchConfig && 'handleProjectLoaded' in window.scratchConfig) {
+                window.scratchConfig.handleProjectLoaded();
+            }
+
+            // 加载默认项目回调
+            if (!this.isDefaultProjectLoaded) {
+                this.isDefaultProjectLoaded = true;
+                if (window.scratchConfig && 'handleDefaultProjectLoaded' in window.scratchConfig) {
+                    window.scratchConfig.handleDefaultProjectLoaded();
+                }
+            }
         }
     }
 
@@ -126,25 +142,39 @@ class GUI extends React.Component {
             callback(blob);
         });
     }
-    async loadProjectByURL (url, callback){
+    async loadProjectByURL (url, callback) {
         console.log(`从URL加载项目${url}`);
-        // this.props.onLoadingStarted()
-        // this.props.vm.clear()
-        const r = await fetch(url);
-        const blob = await r.blob();
-        const reader = new FileReader();
-        reader.onload = () => {
-            this.props.vm.loadProject(reader.result).then(() => {
-                // this.props.onUpdateProjectTitle(projectName)
-                //   this.props.onLoadedProject(this.props.loadingState, this.props.canSave);
-                //   setTimeout(() => this.props.onSetProjectUnchanged());
-                //   if (!this.props.isStarted) {
-                //     setTimeout(() => this.props.vm.renderer.draw());
-                //   }
-                callback();
-            });
-        };
-        reader.readAsArrayBuffer(blob);
+        try {
+            const r = await fetch(url);
+            if (!r.ok) {
+                throw new Error(`HTTP error! status: ${r.status}`);
+            }
+            const contentType = r.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/')) {
+                throw new Error('无效的项目文件格式');
+            }
+            
+            const blob = await r.blob();
+            const reader = new FileReader();
+            reader.onload = () => {
+                this.props.vm.loadProject(reader.result)
+                    .then(() => {
+                        callback();
+                    })
+                    .catch(error => {
+                        console.error('加载项目失败:', error);
+                        callback(error);
+                    });
+            };
+            reader.onerror = error => {
+                console.error('读取文件失败:', error);
+                callback(error);
+            };
+            reader.readAsArrayBuffer(blob);
+        } catch (error) {
+            console.error('获取项目失败:', error);
+            callback(error);
+        }
     }
     render () {
         if (this.props.isError) {

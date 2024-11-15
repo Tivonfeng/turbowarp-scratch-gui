@@ -8,6 +8,7 @@
 	<meta name="description"
 		content="<%= htmlWebpackPlugin.options.APP_NAME %> is a Scratch mod with a compiler to run projects faster, dark mode for your eyes, a bunch of addons to improve the editor, and more." />
 	<link rel="shortcut icon" href="./static/favicon.ico" />
+	<link rel="stylesheet" href="../css/scratch.css" />
 	<title>
 		<%= htmlWebpackPlugin.options.title %>
 	</title>
@@ -230,14 +231,13 @@
 						workName: uploadParam.projectTitle,
 						timeCount: window.scratch.getTimeCount(),
 						id: workId,
-						workType: 2,
+						workType: 11,
 						workStatus: workStatus,
 						departId: departId,
 						additionalId: additionalId,
 						workScene: scene,
 						hasCloudData: window.vm.runtime.hasCloudData(), //是否包含云变量
 					});
-					console.log('data-------->', data);
 					$.ajax({
 						url: "/api/teaching/teachingWork/submit",
 						type: "POST",
@@ -251,11 +251,11 @@
 							canShare = true;
 							if (res.code == 200) {
 								//如果包含云变量
-								if (window.vm.runtime.hasCloudData()) {
-									workId = res.result.id;
-									//更新cloudId
-									window.scratch.setCloudId(workId);
-								}
+								// if (window.vm.runtime.hasCloudData()) {
+								// 	workId = res.result.id;
+								// 	//更新cloudId
+								// 	window.scratch.setCloudId(workId);
+								// }
 								$("#projectTitle").html(projectTitle);
 								let shareUrl =
 									window.location.protocol +
@@ -361,7 +361,8 @@
 									background: "rgb(90 132 225)",
 								},
 								handleClick: () => {
-									window.location.href = "/account/center";
+									// window.location.href = "/account/center";
+									window.scratch.setProjectName('test')
 								},
 							},
 							{
@@ -430,6 +431,56 @@
 							}
 						},
 					},
+					handleVmInitialized: (vm) => {
+						console.log("vm初始化回调");
+					},
+					handleProjectLoaded: () => {
+						console.log("加载项目回调");
+					},
+					handleProjectTitle: () => {
+						console.log("设置项目名称回调");
+					},
+					handleDefaultProjectLoaded: () => {
+						console.log("加载默认项目回调");
+						//默认作品加载完毕
+						if (workFileUrl) {
+							window.scratch.loadProject(workFileUrl, () => {
+								$('.loading').hide()
+								$('.scratch-filter').hide()
+								window.scratch.setProjectName(workName)
+							})
+						} else if (workId) {
+							getWorkInfo(workId, function (info) {
+								window.scratch.loadProject(info.workFileKey_url, () => {
+									$('.loading').hide()
+									$('.scratch-filter').hide()
+									window.scratch.setProjectName(info.workName)
+									//设置云变量ID
+									// window.scratch.setCloudId(workId)
+								})
+							})
+						} else if (unitId) {
+							getUnitInfo(unitId, function (info) {
+								window.scratch.loadProject(info.courseWork_url, () => {
+									$('.loading').hide()
+									$('.scratch-filter').hide()
+									window.scratch.setProjectName(info.unitName)
+								})
+							})
+						} else {
+							let time = new Date();
+							let newTime = time.getFullYear().toString().substring(2) + (time.getMonth() + 1) + time.getDate() + time.getMinutes() + time.getMilliseconds();
+							let projectName = userInfo ? userInfo.realname + '作品' + newTime : 'Scratch作品'
+							
+							// 添加延时确保组件已挂载
+							setTimeout(() => {
+								window.scratch.setProjectName(projectName);
+							}, 100);
+							
+							$('.loading').hide()
+							$('.scratch-filter').hide()
+						}
+					}
 				};
 			</script>
 </head>
