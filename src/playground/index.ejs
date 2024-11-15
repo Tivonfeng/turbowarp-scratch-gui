@@ -257,6 +257,10 @@
 								// 	window.scratch.setCloudId(workId);
 								// }
 								$("#projectTitle").html(projectTitle);
+								const timeCount = window.scratch.getTimeCount();
+								const minutes = Math.floor(timeCount / 60);
+								const seconds = timeCount % 60;
+								$("#timeSpent").html(`${minutes}分${seconds}秒`);
 								let shareUrl =
 									window.location.protocol +
 									"//" +
@@ -598,7 +602,7 @@
 		})();
 	</script>
 
-	<div class="scratch-filter">
+	<div class="scratch-filter" style="display: none;">
 		<div class="loading">
 			<div class="con-box">
 				<h4>请稍后</h4>
@@ -625,6 +629,9 @@
 				<div class="watch-works">
 					<span>微信扫描二维码使用手机体验</span>
 				</div>
+				<p class="time-spent">
+					做题用时: <span id="timeSpent"></span>
+				</p>
 			</div>
 			<div class="fault-code">
 				<span>&times</span>
