@@ -78,7 +78,9 @@ const base = {
                 babelrc: false,
                 plugins: [
                     ['react-intl', {
-                        messagesDir: './translations/messages/'
+                        // messagesDir: './translations/messages/'
+                        moduleSourceName: 'react-intl',
+                        extractSourceLocation: true
                     }]],
                 presets: ['@babel/preset-env', '@babel/preset-react']
             }
