@@ -14,7 +14,7 @@ const manifest = {
       "name": "Music",
       "id": "music",
       "type": "boolean",
-      "default": true
+      "default": false
     },
     {
       "name": "Pen",
