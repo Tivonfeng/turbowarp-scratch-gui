@@ -39,6 +39,142 @@
         100% { transform: rotate(360deg); }
       }
     </style>
+    			<script>
+				let canShare = true;
+				let uploadParam = {};
+
+				let workId = urlParams("workId");
+				let unitId = urlParams("unitId");
+				let workFileUrl = urlParams("workFile"); //SB3路径
+				let workName = urlParams("workName"); //作业名
+				if (workName) workName = decodeURIComponent(workName);
+				let departId = urlParams("departId"); //班级ID
+				let additionalId = urlParams("additionalId"); //附加作业ID
+				let scene = urlParams("scene") || "create"; //来源
+				let workStatus = 0;
+			
+					if (!uploadParam.projectKey || !uploadParam.coverKey) {
+						return;
+					}
+					const data = JSON.stringify({
+						courseId: unitId,
+						workCover: uploadParam.coverKey,
+						workFile: uploadParam.projectKey,
+						workName: uploadParam.projectTitle,
+						timeCount: window.scratch.getTimeCount(),
+						id: workId,
+						workType: 11,
+						workStatus: workStatus,
+						departId: departId,
+						additionalId: additionalId,
+						workScene: scene,
+						hasCloudData: window.vm.runtime.hasCloudData(), //是否包含云变量
+					});
+					$.ajax({
+						url: "/api/teaching/teachingWork/submit",
+						type: "POST",
+						dataType: "json",
+						contentType: "application/json",
+						beforeSend: function (request) {
+							request.setRequestHeader("X-Access-Token", userToken);
+						},
+						data: data,
+						success: function (res) {
+							canShare = true;
+							if (res.code == 200) {
+								//如果包含云变量
+								// if (window.vm.runtime.hasCloudData()) {
+								// 	workId = res.result.id;
+								// 	//更新cloudId
+								// 	window.scratch.setCloudId(workId);
+								// }
+								$("#projectTitle").html(projectTitle);
+								const timeCount = window.scratch.getTimeCount();
+								const minutes = Math.floor(timeCount / 60);
+								const seconds = timeCount % 60;
+								$("#timeSpent").html(`${minutes}分${seconds}秒`);
+								let shareUrl =
+									window.location.protocol +
+									"//" +
+									window.location.hostname +
+									(window.location.port
+										? ":" + window.location.port
+										: "") +
+									"/work-detail?id=" +
+									res.result.id;
+								createCode("qrcode", shareUrl);
+								let img = document.createElement("img");
+								img.id = "qrCodeIco";
+								img.src = "/logo.png";
+								qrcode.appendChild(img);
+								$(".scratch-filter").show();
+								$(".release-success").show();
+							} else {
+								$(".release-false").show();
+							}
+						},
+						error: function () {
+							$(".release-false").show();
+						},
+						complete: function () {
+							$(".uploading").hide();
+						},
+					});
+				}
+				window.scratchConfig = {
+					defaultProjectURL: "./static/project.sb3",
+					handleVmInitialized: (vm) => {
+						console.log("vm初始化回调");
+					},
+					handleProjectLoaded: () => {
+						console.log("加载项目回调");
+					},
+					handleProjectTitle: () => {
+						console.log("设置项目名称回调");
+					},
+					handleDefaultProjectLoaded: () => {
+						console.log("加载默认项目回调");
+						//默认作品加载完毕
+						if (workFileUrl) {
+							window.scratch.loadProject(workFileUrl, () => {
+								$('.loading').hide()
+								$('.scratch-filter').hide()
+								window.scratch.setProjectName(workName)
+							})
+						} else if (workId) {
+							getWorkInfo(workId, function (info) {
+								window.scratch.loadProject(info.workFileKey_url, () => {
+									$('.loading').hide()
+									$('.scratch-filter').hide()
+									window.scratch.setProjectName(info.workName)
+									//设置云变量ID
+									// window.scratch.setCloudId(workId)
+								})
+							})
+						} else if (unitId) {
+							getUnitInfo(unitId, function (info) {
+								window.scratch.loadProject(info.courseWork_url, () => {
+									$('.loading').hide()
+									$('.scratch-filter').hide()
+									window.scratch.setProjectName(info.unitName)
+								})
+							})
+						} else {
+							let time = new Date();
+							let newTime = time.getFullYear().toString().substring(2) + (time.getMonth() + 1) + time.getDate() + time.getMinutes() + time.getMilliseconds();
+							let projectName = userInfo ? userInfo.realname + '作品' + newTime : 'Scratch作品'
+							
+							// 添加延时确保组件已挂载
+							setTimeout(() => {
+								window.scratch.setProjectName(projectName);
+							}, 100);
+							
+							$('.loading').hide()
+							$('.scratch-filter').hide()
+						}
+					}
+				};
+			</script>
   </head>
   <body>
     <noscript>
