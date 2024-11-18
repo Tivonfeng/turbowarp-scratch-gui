@@ -28,6 +28,10 @@ import {fetchProjectMeta} from './tw-project-meta-fetcher-hoc.jsx';
 
 // TW: Temporary hack for project tokens
 const fetchProjectToken = async projectId => {
+    
+    return null;
+
+    // eslint-disable-next-line no-unreachable
     if (projectId === '0') {
         return null;
     }
@@ -89,15 +93,13 @@ const ProjectFetcherHOC = function (WrappedComponent) {
                 storage.setAssetHost(this.props.assetHost);
             }
             if (this.props.isFetchingWithId && !prevProps.isFetchingWithId) {
-
                 // 导入默认project.sb3
                 if (window.scratchConfig && 'defaultProjectURL' in window.scratchConfig){
-                    const that = this;
                     fetch(window.scratchConfig.defaultProjectURL).then(r => r.blob())
                         .then(blob => {
                             const reader = new FileReader();
                             reader.onload = () => {
-                                that.props.onFetchedProjectData(reader.result, that.props.loadingState);
+                                this.props.onFetchedProjectData(reader.result, this.props.loadingState);
                             };
                             reader.readAsArrayBuffer(blob);
                         });
