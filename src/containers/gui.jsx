@@ -136,29 +136,36 @@ class GUI extends React.Component {
         this.props.vm.renderer.draw();
     }
     getProjectCoverBlob (callback) {
+        // 先确保渲染透明预览
+        this.props.vm.postIOData('video', {forceTransparentPreview: true});
+        // 等待渲染完成
         this.props.vm.renderer.draw();
-        setTimeout(() => {
+       
+        // 使用 requestSnapshot 确保获取到正确的渲染状态
+        this.props.vm.renderer.requestSnapshot(() => {
             const canvas = this.props.vm.renderer.canvas;
-            console.log('canvas------->', canvas);
+           
             if (!canvas) {
                 callback(new Error('画布未找到'));
                 return;
             }
-            
+           
             if (canvas.width === 0 || canvas.height === 0) {
                 callback(new Error('画布尺寸无效'));
                 return;
             }
-            
+           
             canvas.toBlob(blob => {
-                console.log('blob------->', blob);
+                // 恢复正常预览状态
+                this.props.vm.postIOData('video', {forceTransparentPreview: false});
+               
                 if (!blob) {
                     callback(new Error('生成Blob失败'));
                     return;
                 }
                 callback(blob);
             });
-        }, 100);
+        });
     }
     async loadProjectByURL (url, callback) {
         console.log(`从URL加载项目${url}`);
