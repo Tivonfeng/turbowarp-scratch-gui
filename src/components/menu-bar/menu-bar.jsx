@@ -113,6 +113,7 @@ import {notScratchDesktop} from '../../lib/isScratchDesktop.js';
 import ProfileButton from './profile-button.jsx';
 import {APP_NAME} from '../../lib/brand.js';
 import TimeCount from './time-count.jsx';
+import confetti from 'canvas-confetti';
 
 const ariaMessages = defineMessages({
     tutorials: {
@@ -195,6 +196,25 @@ const AboutButton = props => (
 
 AboutButton.propTypes = {
     onClick: PropTypes.func.isRequired
+};
+window.config = window.config || {};
+window.config.startConfetti = () => {
+    confetti({
+        particleCount: 40,
+        angle: 60,
+        spread: 55,
+        origin: {x: 0},
+        ticks: 300,
+        zIndex: 2500,
+    });
+    confetti({
+        particleCount: 40,
+        angle: 120,
+        spread: 55,
+        origin: {x: 1},
+        ticks: 300,
+        zIndex: 2500,
+    });
 };
 
 // Unlike <MenuItem href="">, this uses an actual <a>
